@@ -42,13 +42,70 @@ export const Navbar: React.FC = () => {
     };
   }, [mobileMenuOpen]);
 
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
+  // Apply a theme value to the document and local state
+  const updateMetaThemeColor = (dark: boolean) => {
+    try {
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#0b111b' : '#ffffff');
+    } catch {}
+  };
+
+  const applyTheme = (theme: 'dark' | 'light' | 'system') => {
+    if (theme === 'system') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', prefersDark);
+      setIsDark(prefersDark);
+      updateMetaThemeColor(prefersDark);
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      setIsDark(theme === 'dark');
+      updateMetaThemeColor(theme === 'dark');
     }
-  }, [isDark]);
+  };
+
+  useEffect(() => {
+    const stored = localStorage.getItem('verity_theme') as 'dark' | 'light' | 'system' | null;
+    if (stored) {
+      applyTheme(stored);
+    } else {
+      // default behavior (fallback to system)
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', prefersDark);
+      setIsDark(prefersDark);
+    }
+
+    // Sync theme across tabs/windows on storage change
+    const handleStorage = (e: StorageEvent) => {
+      if (!e.key) return;
+      if (e.key === 'verity_theme') {
+        const newTheme = (e.newValue || null) as 'dark' | 'light' | 'system' | null;
+        if (newTheme) applyTheme(newTheme);
+      }
+      if (e.key === 'verity_cookie_consent') {
+        // if consent was removed in another tab, don't persist theme there
+        const consent = e.newValue;
+        if (consent !== 'true') {
+          try { localStorage.removeItem('verity_theme'); } catch {};
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextIsDark = !isDark;
+    setIsDark(nextIsDark);
+    document.documentElement.classList.toggle('dark', nextIsDark);
+    updateMetaThemeColor(nextIsDark);
+    try {
+      const consent = localStorage.getItem('verity_cookie_consent');
+      if (consent === 'true') {
+        localStorage.setItem('verity_theme', nextIsDark ? 'dark' : 'light');
+      }
+    } catch {}
+  };
 
   const navLinks = [
     { label: 'How it works', href: '#how-it-works' },
@@ -122,7 +179,7 @@ export const Navbar: React.FC = () => {
             {/* Desktop Actions - Visible on Large Screens only */}
             <div className="hidden lg:flex items-center gap-4">
               <button 
-                onClick={() => setIsDark(!isDark)}
+                onClick={toggleTheme}
                 className="p-2 rounded-lg text-light-muted dark:text-dark-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 aria-label="Toggle theme"
               >
@@ -142,8 +199,8 @@ export const Navbar: React.FC = () => {
 
             {/* Tablet/Mobile Actions & Menu Toggle */}
             <div className="lg:hidden flex items-center gap-3 relative z-50">
-               <button 
-                onClick={() => setIsDark(!isDark)}
+              <button 
+                onClick={toggleTheme}
                 className="p-2 rounded-lg text-light-muted dark:text-dark-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               >
                 {isDark ? <Sun size={22} /> : <Moon size={22} />}

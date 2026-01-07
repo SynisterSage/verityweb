@@ -138,7 +138,7 @@ const FamilyReviewApp = () => {
    return (
       <div className="w-full max-w-[260px] relative">
          {/* Main Card */}
-         <div className="bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 dark:ring-[#202c3c] relative z-10 transition-colors duration-300">
+         <div className="bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5 dark:ring-[#202c3c] relative z-10 transition-colors duration-300">
             {/* Header */}
             <div className="p-4 border-b border-gray-200 dark:border-[#202c3c] bg-white/50 dark:bg-[#1a2332]/50 backdrop-blur-sm">
                <div className="flex items-center justify-between mb-3">
@@ -191,8 +191,8 @@ const FamilyReviewApp = () => {
          </div>
 
          {/* Stacked Cards Effect */}
-         <div className="absolute top-4 left-4 right-[-10px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-2xl -z-10 opacity-60 dark:opacity-40 scale-95 origin-center transition-colors duration-300"></div>
-         <div className="absolute top-8 left-8 right-[-20px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-2xl -z-20 opacity-40 dark:opacity-20 scale-90 origin-center transition-colors duration-300"></div>
+         <div className="absolute top-4 left-4 right-[-10px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-10 opacity-60 dark:opacity-40 scale-95 origin-center transition-colors duration-300"></div>
+         <div className="absolute top-8 left-8 right-[-20px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-20 opacity-40 dark:opacity-20 scale-90 origin-center transition-colors duration-300"></div>
       </div>
    )
 }

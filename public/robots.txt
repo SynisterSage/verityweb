@@ -1,0 +1,7 @@
+# robots.txt for Verity Protect
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location (replace example.com with your site domain)
+Sitemap: https://example.com/sitemap.xml

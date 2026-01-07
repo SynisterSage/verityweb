@@ -33,6 +33,7 @@ export const CookieConsent: React.FC = () => {
             <p className="text-xs text-light-muted dark:text-dark-muted leading-relaxed">
               We use analytics cookies to understand how you use our website and improve your experience.
             </p>
+            {/* Theme is controlled via the navbar toggle; acceptance enables persistence when toggled. */}
           </div>
           <button 
             onClick={() => setIsVisible(false)}
