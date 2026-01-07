@@ -81,3 +81,15 @@ body:not(.dark)::-webkit-scrollbar-thumb,
     background: #2d6df6;
   }
 }
+
+/* Disable transitions and animations while switching theme to make changes instant */
+.disable-transitions *, .disable-transitions *::before, .disable-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+  /* Reduce expensive painting during theme switch on slow devices */
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+}
