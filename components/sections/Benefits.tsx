@@ -6,22 +6,22 @@ export const Benefits: React.FC = () => {
     {
       icon: Heart,
       title: "Peace of Mind",
-      description: "Stop worrying about your parents answering the wrong call. We handle the vigilance so you can enjoy the conversation."
+      description: "Stop worrying about your loved ones answering the wrong call. We quietly screen risky calls so you can enjoy talking with them."
     },
     {
       icon: Lock,
       title: "Financial Safety",
-      description: "Prevent costly scams before they start. Verity identifies voice-cloning and urgency tactics used by modern fraudsters."
+      description: "Stop scams before money is lost. Verity looks for callers who try to rush or trick people into giving money or personal details."
     },
     {
       icon: Smartphone,
       title: "Simple for Parents",
-      description: "No new apps for them to learn. No complex interfaces. It works with their existing phone carrier and dialer."
+      description: "No new apps to learn. No confusing menus. It works with the phone they already know and uses the usual calling screen."
     },
     {
       icon: Zap,
       title: "Instant Alerts",
-      description: "As a caretaker, you're always in the loop. Receive email or SMS alerts the moment a threat is intercepted."
+      description: "You stay informed. Get immediate alerts by email or text the moment we block a risky call."
     }
   ];
 
@@ -46,13 +46,16 @@ export const Benefits: React.FC = () => {
 
           <div className="order-1 lg:order-2 space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold text-light-text dark:text-dark-text">
-              Why families trust Verity
+              How <span className="text-brand-blue">Verity</span> protects your family
             </h2>
-            <p className="text-lg text-light-muted dark:text-dark-muted">
-              Protecting your family shouldn’t add stress. Verity creates a calm, reliable layer between your loved ones and the outside world, so you stay informed without constant worry.
+            <p className="text-lg text-white dark:text-white">
+              Phone scams are getting smarter and often target older adults. Did you know scams can cost families hundreds or even thousands of dollars? <span className="text-brand-blue font-semibold">Verity</span> stops risky calls so your loved ones don’t have to decide in the moment.
             </p>
-            <p className="text-lg text-light-muted dark:text-dark-muted">
-              We take a <span className="text-brand-blue font-semibold">human-first approach</span>. Unknown callers are screened by default, trusted people get through instantly, and you decide what’s safe. It returns the phone to what it should be, a connection without fear.
+            <p className="text-lg text-white dark:text-white">
+              <span className="text-brand-blue font-semibold">Trusted contacts</span> ring through automatically. Unknown callers must enter a <span className="text-brand-blue font-semibold">Family PIN</span>. Entering the correct PIN connects the call. Entering the wrong PIN or skipping it asks the caller to leave a short <span className="text-brand-blue font-semibold">voicemail for family review</span>.
+            </p>
+            <p className="text-lg text-light-muted dark:text-dark-muted font-semibold">
+              Simple, automatic, and focused on keeping money and peace of mind with your family.
             </p>
           </div>
 

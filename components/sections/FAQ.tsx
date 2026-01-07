@@ -7,32 +7,32 @@ export const FAQ: React.FC = () => {
 
   const items: FaqItem[] = [
     {
-      question: "Does it work on phones and landlines?",
-      answer: "Yes, as long as call forwarding is supported. Verity works seamlessly with mobile phones and most landline providers to ensure protection regardless of the device."
+      question: "Can I use this with mobile phones and landlines?",
+      answer: "Yes. Verity works with mobile phones and most landlines so calls stay protected no matter the device."
     },
     {
       question: "Will my loved one have to answer unknown callers?",
-      answer: "No. Unknown callers are screened silently and go to voicemail where they are reviewed by family or caregivers. Your loved one is never disturbed by strangers."
+      answer: "No. Unknown callers are screened and sent to voicemail for family review so your loved one is not bothered by strangers."
     },
     {
-      question: "How does the PIN work, and can families make it optional?",
-      answer: "Unknown callers are asked for a short PIN. If they enter it, the call connects; if not, they can leave a message for review. Families can choose to disable the PIN so unknown callers go straight to the reviewed message instead."
+      question: "How does the Family PIN work?",
+      answer: "Unknown callers are asked to enter a short Family PIN. If they enter it correctly the call connects. If they get it wrong or skip it, they leave a short voicemail for your family to review. You can turn the PIN off if you prefer."
     },
     {
-      question: "What happens when someone isn’t trusted, do they still reach voicemail?",
-      answer: "They don’t ring your loved one. Verity answers, asks for a brief message, and you review it in the app. You can then mark it safe or block the number."
+      question: "What happens if a caller isn't on the trusted list?",
+      answer: "Their call is answered by Verity, not your loved one. Verity asks them to leave a short message (or enter the PIN if you’ve turned that on). You review it in the app and decide to allow or block the number."
     },
     {
       question: "How do trusted contacts work?",
-      answer: "You choose family, friends, and doctors to add to the safe list. Calls from these trusted contacts bypass the PIN requirement and ring the phone immediately."
+      answer: "Add family, friends, and doctors from your phone's Contacts. Calls from trusted contacts bypass the PIN and ring through right away."
     },
     {
-      question: "What if a doctor calls from a new number?",
-      answer: "Verity will ask them for the Family PIN. If they enter it, the call rings through. If they don't have it, they can leave a message, and you can mark the number as safe for next time."
+      question: "What if a doctor or caregiver calls from a new number?",
+      answer: "They will be asked for the Family PIN. If they enter it the call connects. If not, they can leave a short message and you can mark the number as trusted afterward."
     },
     {
-      question: "How much does Verity Protect cost?",
-      answer: "We are currently in early access. Pricing will be announced soon. We encourage you to join the waitlist to get the latest updates on launch availability."
+      question: "How much does this cost?",
+      answer: "We're in early access and will share pricing soon. Join the waitlist to get updates and early access offers."
     }
   ];
 
