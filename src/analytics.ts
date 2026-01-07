@@ -17,7 +17,9 @@ export function initGA() {
     function gtag() { (window as any).dataLayer.push(arguments); }
     (window as any).gtag = gtag;
     (window as any).gtag('js', new Date());
-    (window as any).gtag('config', GA_ID, { send_page_view: false });
+    // Enable debug_mode for easier verification in DebugView and console logs
+    (window as any).gtag('config', GA_ID, { send_page_view: false, debug_mode: true });
+    try { console.info('[GA] initGA: gtag loaded and configured', GA_ID); } catch {}
   } catch (err) {
     // fail silently
   }
@@ -27,5 +29,6 @@ export function pageview(path: string) {
   try {
     if (!(window as any).gtag) return;
     (window as any).gtag('event', 'page_view', { page_path: path });
+    try { console.info('[GA] pageview', path); } catch {}
   } catch {}
 }
