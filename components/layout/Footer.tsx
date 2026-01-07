@@ -8,13 +8,27 @@ export const Footer: React.FC = () => {
   const handlePrivacyClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate('/privacy');
-    window.scrollTo(0, 0);
+    // ensure we scroll to top after navigation completes (some mobile browsers
+    // update layout slower; delay a bit and use multiple scroll targets)
+    setTimeout(() => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      } catch {}
+    }, 60);
   };
 
   const handleTermsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     navigate('/terms');
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      } catch {}
+    }, 60);
   };
 
   return (
