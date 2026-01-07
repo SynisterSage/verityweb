@@ -11,7 +11,7 @@ import { Footer } from './components/layout/Footer';
 import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
 import { TermsOfService } from './components/legal/TermsOfService';
 import { CookieConsent } from './components/ui/CookieConsent';
-import { initGA, pageview } from './analytics';
+import { initGA, pageview } from './src/analytics';
 
 function Home() {
   return (
