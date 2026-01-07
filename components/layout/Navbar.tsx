@@ -14,7 +14,8 @@ export const Navbar: React.FC = () => {
   const [paddingRight, setPaddingRight] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === '/';
+  const landingPaths = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist'];
+  const isHome = landingPaths.includes(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,30 +109,27 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinks = [
-    { label: 'How it works', href: '#how-it-works' },
-    { label: 'Benefits', href: '#benefits' },
-    { label: 'FAQ', href: '#faq' },
-    { label: 'Agencies', href: '#agencies' },
+    { label: 'How it works', href: '/how-it-works' },
+    { label: 'Benefits', href: '/benefits' },
+    { label: 'FAQ', href: '/faq' },
+    { label: 'Agencies', href: '/agencies' },
   ];
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
-    if (!isHome) {
-      navigate('/');
-      setTimeout(() => {
-        const element = document.querySelector(href);
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-      }, 120);
-    } else {
-      const element = document.querySelector(href);
-      if (element) element.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Navigate directly to the route (per-section pages)
+    navigate(href);
   };
   
   const goHome = () => {
     setMobileMenuOpen(false);
-    navigate('/');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Only navigate back to the site root from standalone pages
+    // (privacy and terms). On section routes we render Home, so
+    // avoid forcing a navigation away.
+    if (location.pathname === '/privacy' || location.pathname === '/terms') {
+      navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // We restrict transition properties to avoid animating padding-right which causes visual jumps when scrollbar disappears
@@ -186,7 +184,7 @@ export const Navbar: React.FC = () => {
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </button>
               {isHome && (
-                <Button size="sm" onClick={() => handleNavClick('#waitlist')}>
+                <Button size="sm" onClick={() => handleNavClick('/waitlist')}>
                   Join Waitlist
                 </Button>
               )}
@@ -240,7 +238,7 @@ export const Navbar: React.FC = () => {
                 </a>
               ))}
               <div className="pt-6 mt-6 border-t border-light-border dark:border-dark-border">
-                <Button fullWidth size="lg" onClick={() => handleNavClick('#waitlist')}>
+                <Button fullWidth size="lg" onClick={() => handleNavClick('/waitlist')}>
                   Join Waitlist
                 </Button>
               </div>

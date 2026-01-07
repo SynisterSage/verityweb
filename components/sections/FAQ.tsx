@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { FaqItem } from '../../types';
 
@@ -39,6 +39,33 @@ export const FAQ: React.FC = () => {
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  // Inject JSON-LD for FAQ to help search engines
+  useEffect(() => {
+    try {
+      const data = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": items.map(i => ({
+          "@type": "Question",
+          "name": i.question,
+          "acceptedAnswer": { "@type": "Answer", "text": i.answer }
+        }))
+      };
+      let script = document.getElementById('faq-jsonld') as HTMLScriptElement | null;
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'faq-jsonld';
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.text = JSON.stringify(data);
+    } catch {}
+    return () => {
+      const s = document.getElementById('faq-jsonld');
+      if (s) s.remove();
+    };
+  }, []);
 
   return (
     <section id="faq" className="py-24 bg-brand-blue/5 border-t border-light-border dark:border-dark-border">

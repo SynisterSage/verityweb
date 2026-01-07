@@ -12,8 +12,21 @@ import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
 import { TermsOfService } from './components/legal/TermsOfService';
 import { CookieConsent } from './components/ui/CookieConsent';
 import { initGA, pageview } from './src/analytics';
+import Page from './src/Page';
 
-function Home() {
+function Home({ scrollTo }: { scrollTo?: string }) {
+  React.useEffect(() => {
+    if (!scrollTo) return;
+    // small delay to ensure layout rendered
+    const t = setTimeout(() => {
+      try {
+        const el = document.querySelector(scrollTo);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      } catch {}
+    }, 60);
+    return () => clearTimeout(t);
+  }, [scrollTo]);
+
   return (
     <div className="animate-in fade-in duration-500">
       <Hero />
@@ -50,6 +63,11 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/how-it-works" element={<Page title="How it works" description="How Verity screens calls and keeps your family safe"><Home scrollTo="#how-it-works" /></Page>} />
+          <Route path="/benefits" element={<Page title="Benefits" description="Why families trust Verity to protect their loved ones"><Home scrollTo="#benefits" /></Page>} />
+          <Route path="/faq" element={<Page title="FAQ" description="Frequently asked questions about Verity Protect"><Home scrollTo="#faq" /></Page>} />
+          <Route path="/agencies" element={<Page title="Agencies" description="Information for agencies and partners"><Home scrollTo="#agencies" /></Page>} />
+          <Route path="/waitlist" element={<Page title="Join the waitlist" description="Sign up to join the Verity Protect waitlist"><Home scrollTo="#waitlist" /></Page>} />
           <Route path="/privacy" element={<div className="animate-in fade-in duration-500"><PrivacyPolicy /></div>} />
           <Route path="/terms" element={<div className="animate-in fade-in duration-500"><TermsOfService /></div>} />
         </Routes>

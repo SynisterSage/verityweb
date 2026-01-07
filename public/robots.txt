@@ -3,5 +3,5 @@
 User-agent: *
 Allow: /
 
-# Sitemap location (replace example.com with your site domain)
-Sitemap: https://example.com/sitemap.xml
+# Sitemap location
+Sitemap: https://verityprotect.com/sitemap.xml

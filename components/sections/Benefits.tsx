@@ -48,10 +48,10 @@ export const Benefits: React.FC = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-light-text dark:text-dark-text">
               How <span className="text-brand-blue">Verity</span> protects your family
             </h2>
-            <p className="text-lg text-white dark:text-white">
+            <p className="text-lg text-light-text dark:text-white">
               Phone scams are getting smarter and often target older adults. Did you know scams can cost families hundreds or even thousands of dollars? <span className="text-brand-blue font-semibold">Verity</span> stops risky calls so your loved ones don’t have to decide in the moment.
             </p>
-            <p className="text-lg text-white dark:text-white">
+            <p className="text-lg text-light-text dark:text-white">
               <span className="text-brand-blue font-semibold">Trusted contacts</span> ring through automatically. Unknown callers must enter a <span className="text-brand-blue font-semibold">Family PIN</span>. Entering the correct PIN connects the call. Entering the wrong PIN or skipping it asks the caller to leave a short <span className="text-brand-blue font-semibold">voicemail for family review</span>.
             </p>
             <p className="text-lg text-light-muted dark:text-dark-muted font-semibold">
