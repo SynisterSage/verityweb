@@ -123,13 +123,9 @@ export const Navbar: React.FC = () => {
   
   const goHome = () => {
     setMobileMenuOpen(false);
-    // Only navigate back to the site root from standalone pages
-    // (privacy and terms). On section routes we render Home, so
-    // avoid forcing a navigation away.
-    if (location.pathname === '/privacy' || location.pathname === '/terms') {
-      navigate('/');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Always navigate to site root and scroll to top
+    navigate('/');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // We restrict transition properties to avoid animating padding-right which causes visual jumps when scrollbar disappears

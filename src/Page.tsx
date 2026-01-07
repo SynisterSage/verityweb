@@ -1,51 +1,61 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import seo from './seo';
 
 interface PageProps {
-  title: string;
+  title?: string;
   description?: string;
   children: React.ReactNode;
 }
 
 const Page: React.FC<PageProps> = ({ title, description, children }) => {
-  useEffect(() => {
-    const base = 'Verity Protect';
-    document.title = `${title} | ${base}`;
+  const base = 'Verity Protect';
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const rawPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+  const pathname = rawPath.replace(/\/$/, '') || '/';
 
-    let meta: HTMLMetaElement | null = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'description';
-      document.head.appendChild(meta);
+  const routeSeo = seo[pathname] || {};
+  const resolvedTitle = title || routeSeo.title || seo['/'].title || base;
+  const finalTitle = resolvedTitle.includes('|') || resolvedTitle === base ? resolvedTitle : `${resolvedTitle} | ${base}`;
+  const resolvedDescription = description || routeSeo.description || seo['/'].description || '';
+  const defaultOgBase = '/og-image.png';
+  const defaultOg2x = '/og-image@2x.png';
+  let ogImage = routeSeo.ogImage || seo['/'].ogImage || defaultOgBase;
+  try {
+    if (typeof window !== 'undefined' && (window as any).devicePixelRatio >= 2) {
+      if (ogImage.endsWith('.png')) {
+        ogImage = ogImage.replace(/\.png$/, '@2x.png');
+      } else {
+        ogImage = defaultOg2x;
+      }
     }
-    if (description) meta.content = description;
-    // Open Graph
-    let ogTitle = document.querySelector('meta[property="og:title"]') as HTMLMetaElement | null;
-    if (!ogTitle) {
-      ogTitle = document.createElement('meta');
-      ogTitle.setAttribute('property', 'og:title');
-      document.head.appendChild(ogTitle);
-    }
-    ogTitle.content = `${title} | ${base}`;
+  } catch {}
+  const canonicalPath = pathname === '/' ? '/' : pathname;
 
-    let ogDesc = document.querySelector('meta[property="og:description"]') as HTMLMetaElement | null;
-    if (!ogDesc) {
-      ogDesc = document.createElement('meta');
-      ogDesc.setAttribute('property', 'og:description');
-      document.head.appendChild(ogDesc);
-    }
-    if (description) ogDesc.content = description;
+  return (
+    <>
+      <Helmet>
+        <title>{finalTitle}</title>
+        <meta name="description" content={resolvedDescription} />
 
-    // canonical
-    let linkCanonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!linkCanonical) {
-      linkCanonical = document.createElement('link');
-      linkCanonical.rel = 'canonical';
-      document.head.appendChild(linkCanonical);
-    }
-    linkCanonical.href = window.location.href;
-  }, [title, description]);
+        {/* Open Graph */}
+        <meta property="og:title" content={finalTitle} />
+        <meta property="og:description" content={resolvedDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:type" content="website" />
 
-  return <div className="animate-in fade-in duration-500">{children}</div>;
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={finalTitle} />
+        <meta name="twitter:description" content={resolvedDescription} />
+        <meta name="twitter:image" content={ogImage} />
+
+        <link rel="canonical" href={`${origin}${canonicalPath}`} />
+      </Helmet>
+
+      <div className="animate-in fade-in duration-500">{children}</div>
+    </>
+  );
 };
 
 export default Page;

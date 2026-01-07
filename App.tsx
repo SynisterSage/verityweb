@@ -13,6 +13,7 @@ import { TermsOfService } from './components/legal/TermsOfService';
 import { CookieConsent } from './components/ui/CookieConsent';
 import { initGA, pageview } from './src/analytics';
 import Page from './src/Page';
+import seo from './src/seo';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -56,6 +57,16 @@ function App() {
   useEffect(() => {
     // send SPA pageview on route change if gtag initialized
     pageview(location.pathname + location.search);
+    try {
+      const path = location.pathname.replace(/\/$/, '') || '/';
+      const mapped = seo[path];
+      if (mapped && mapped.title) {
+        // set document.title to ensure immediate update on client navigation
+        const base = 'Verity Protect';
+        const title = mapped.title.includes('|') ? mapped.title : `${mapped.title} | ${base}`;
+        document.title = title;
+      }
+    } catch {}
   }, [location]);
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg font-sans selection:bg-brand-blue selection:text-white flex flex-col">
