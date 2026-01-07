@@ -43,8 +43,23 @@ export const Footer: React.FC = () => {
           {/* On mobile: Stacked column. */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             
-            {/* Brand */}
-            <div className="flex items-center gap-3">
+            {/* Brand (clickable - go home) */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                navigate('/');
+                setTimeout(() => {
+                  try {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                  } catch {}
+                }, 60);
+              }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { navigate('/'); setTimeout(() => { try { window.scrollTo({ top: 0, left: 0, behavior: 'auto' }); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch {} }, 60); } }}
+              className="flex items-center gap-3 cursor-pointer"
+            >
               <Logo className="w-8 h-8 rounded-xl shadow-md shadow-black/10" />
               <span className="text-lg font-bold text-light-text dark:text-dark-text">
                 Verity Protect
