@@ -93,9 +93,9 @@ const AIScreeningApp = () => {
                 </span>
              </div>
              <div className="h-1.5 w-full bg-gray-200 dark:bg-[#202c3c] rounded-full overflow-hidden transition-colors duration-300">
-                <div 
-                   className={`h-full transition-all duration-[1000ms] ease-out rounded-full ${step === 2 ? 'bg-red-500 dark:bg-[#ff8a8a] shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-brand-blue'}`}
-                   style={{ width: `${step === 0 ? 15 : step === 1 ? 65 : 92}%` }}
+                <div
+                   className={`h-full transform origin-left transition-transform duration-[1000ms] ease-out rounded-full ${step === 2 ? 'bg-red-500 dark:bg-[#ff8a8a] md:shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-brand-blue' } motion-reduce:transition-none`}
+                   style={{ transform: `scaleX(${(step === 0 ? 15 : step === 1 ? 65 : 92) / 100})`, willChange: 'transform' }}
                 ></div>
              </div>
           </div>
@@ -140,7 +140,7 @@ const FamilyReviewApp = () => {
          {/* Main Card */}
          <div className="bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5 dark:ring-[#202c3c] relative z-10 transition-colors duration-300">
             {/* Header */}
-            <div className="p-4 border-b border-gray-200 dark:border-[#202c3c] bg-white/50 dark:bg-[#1a2332]/50 backdrop-blur-sm">
+            <div className="p-4 border-b border-gray-200 dark:border-[#202c3c] bg-white/50 dark:bg-[#1a2332]/50 backdrop-blur-sm rounded-t-3xl overflow-hidden">
                <div className="flex items-center justify-between mb-3">
                   <span className="px-2 py-0.5 rounded bg-red-500/10 dark:bg-[#ff8a8a]/10 text-red-600 dark:text-[#ff8a8a] border border-red-500/20 dark:border-[#ff8a8a]/20 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
                      <AlertTriangle size={10} /> Fraud Alert
@@ -152,7 +152,7 @@ const FamilyReviewApp = () => {
             </div>
             
             {/* Body */}
-            <div className="p-3 bg-gray-50 dark:bg-[#121a26] h-[60px] flex items-center justify-center relative transition-colors duration-300">
+            <div className="p-3 bg-gray-50 dark:bg-[#121a26] h-[60px] flex items-center justify-center relative transition-colors duration-300 rounded-b-3xl overflow-hidden">
                {state === 'blocked' ? (
                   <div className="w-full animate-in zoom-in duration-300">
                       <div className="bg-red-500 dark:bg-[#ff8a8a] text-white dark:text-[#0b111b] py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 dark:shadow-[#ff8a8a]/20">
@@ -191,8 +191,14 @@ const FamilyReviewApp = () => {
          </div>
 
          {/* Stacked Cards Effect */}
-         <div className="absolute top-4 left-4 right-[-10px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-10 opacity-60 dark:opacity-40 scale-95 origin-center transition-colors duration-300"></div>
-         <div className="absolute top-8 left-8 right-[-20px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-20 opacity-40 dark:opacity-20 scale-90 origin-center transition-colors duration-300"></div>
+                <div
+                   className="absolute top-4 left-4 right-[-10px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-10 opacity-60 dark:opacity-40 scale-95 origin-center transition-colors duration-300"
+                   style={{ clipPath: 'inset(0 round 9999px)', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 28px 40px rgba(2,6,23,0.55), 0 18px 28px rgba(2,6,23,0.35), 0 8px 16px rgba(2,6,23,0.18)' }}
+                />
+                <div
+                   className="absolute top-8 left-8 right-[-20px] h-full bg-gray-50 dark:bg-[#121a26] border border-gray-200 dark:border-[#202c3c] rounded-3xl -z-20 opacity-40 dark:opacity-20 scale-90 origin-center transition-colors duration-300"
+                   style={{ clipPath: 'inset(0 round 9999px)', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 28px 40px rgba(2,6,23,0.55), 0 18px 28px rgba(2,6,23,0.35), 0 8px 16px rgba(2,6,23,0.18)' }}
+                />
       </div>
    )
 }
@@ -218,7 +224,7 @@ export const HowItWorks: React.FC = () => {
           
           <CardContainer 
             title="1. Trusted Contacts" 
-            description="Calls from your safe list (family, doctors, friends) skip the PIN and ring through immediately. They are never blocked."
+                  description="Calls from your safe list (family, doctors, friends) uploaded from your iOS/Android Contacts app, skip the PIN and ring through immediately."
           >
              <TrustedContactsApp />
           </CardContainer>

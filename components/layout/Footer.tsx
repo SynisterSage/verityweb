@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-sm text-light-muted dark:text-dark-muted">
               <button onClick={handlePrivacyClick} className="hover:text-light-text dark:hover:text-dark-text transition-colors">Privacy & Data</button>
               <button onClick={handleTermsClick} className="hover:text-light-text dark:hover:text-dark-text transition-colors">Terms</button>
-              <a href="mailto:verityprotect@gmail.com" className="hover:text-light-text dark:hover:text-dark-text transition-colors">verityprotect@gmail.com</a>
+              <a href="mailto:verityprotect@gmail.com" className="hover:text-light-text dark:hover:text-dark-text transition-colors">VerityProtect@Gmail.com</a>
             </div>
 
             {/* Copyright - Visible on Desktop in this row */}

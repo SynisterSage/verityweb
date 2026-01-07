@@ -7,17 +7,77 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar to match dark theme */
+/* Custom scrollbar — light + dark variants */
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
+
+/* Light mode (default) */
 ::-webkit-scrollbar-track {
-  background: #0b111b;
+  background: #f1f5f9; /* slate-100 */
 }
 ::-webkit-scrollbar-thumb {
-  background: #202c3c;
-  border-radius: 5px;
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
+
+/* Dark mode when using Tailwind's .dark class */
+.dark ::-webkit-scrollbar-track {
+  /* legacy: keep compatibility if .dark is applied to a container */
+  background: #0b111b;
+}
+html.dark::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html.dark::-webkit-scrollbar-track {
+  background: #0b111b;
+}
+html.dark::-webkit-scrollbar-thumb {
+  background: #202c3c;
+  border-radius: 6px;
+}
+html.dark::-webkit-scrollbar-thumb:hover {
   background: #2d6df6;
+}
+
+/* Stronger fallbacks in case .dark is applied to body/:root or a parent */
+:root.dark::-webkit-scrollbar-thumb,
+body.dark::-webkit-scrollbar-thumb,
+html.dark::-webkit-scrollbar-thumb,
+.dark::-webkit-scrollbar-thumb {
+  background: #202c3c !important;
+}
+:root.dark::-webkit-scrollbar-track,
+body.dark::-webkit-scrollbar-track,
+html.dark::-webkit-scrollbar-track,
+.dark::-webkit-scrollbar-track {
+  background: #0b111b !important;
+}
+
+/* Explicit light-mode rules when html does NOT have .dark */
+html:not(.dark)::-webkit-scrollbar-thumb,
+:root:not(.dark)::-webkit-scrollbar-thumb,
+body:not(.dark)::-webkit-scrollbar-thumb,
+.light::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+}
+
+/* Respect system preference as a fallback */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #0b111b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #202c3c;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2d6df6;
+  }
 }
