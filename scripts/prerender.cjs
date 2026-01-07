@@ -91,12 +91,36 @@ function main() {
   const template = readTemplate();
   const baseUrl = 'https://www.verityprotect.com';
 
+  // Organization + WebSite JSON-LD to help Google associate brand with site
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Verity Protect",
+    "url": baseUrl,
+    "logo": `${baseUrl}/logo-192.png`,
+    "sameAs": []
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": baseUrl,
+    "name": "Verity Protect",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${baseUrl}/?s={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   Object.keys(seo).forEach((route) => {
     const data = seo[route];
     const canonical = baseUrl + (route === '/' ? '/' : route);
     const title = data.title && data.title.includes('|') ? data.title : data.title;
     const metaHtml = buildMeta({ title, description: data.description, ogImage: data.ogImage, canonical });
-    writeForRoute(template, route, metaHtml);
+    // Inject JSON-LD for Organization and WebSite into every prerendered page
+    const jsonLdScripts = `\n    <script type="application/ld+json">${JSON.stringify(orgJsonLd)}</script>\n    <script type="application/ld+json">${JSON.stringify(websiteJsonLd)}</script>`;
+    writeForRoute(template, route, metaHtml + jsonLdScripts);
   });
 }
 
