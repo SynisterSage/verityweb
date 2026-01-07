@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
+import Select from '../ui/Select';
 import { UserRole, WaitlistFormData } from '../../types';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -192,25 +193,19 @@ export const Waitlist: React.FC = () => {
                   <label htmlFor="teamSize" className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
                     Clients / Team Size
                   </label>
-                  <div className="relative">
-                    <select
-                      id="teamSize"
-                      name="teamSize"
-                      required
-                      className="w-full px-4 py-3 pr-10 rounded-xl bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border text-light-text dark:text-dark-text focus:ring-2 focus:ring-brand-blue focus:border-transparent outline-none transition-all appearance-none h-12"
-                      value={formData.teamSize}
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled>Select size</option>
-                      <option value="1-10">1-10</option>
-                      <option value="11-50">11-50</option>
-                      <option value="50+">50+</option>
-                    </select>
-                    {/* Chevron indicator for dropdown */}
-                    <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-light-muted dark:text-dark-muted w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
-                    </svg>
-                  </div>
+                  <Select
+                    id="teamSize"
+                    name="teamSize"
+                    required
+                    value={formData.teamSize}
+                    onChange={handleChange}
+                    options={[
+                      { value: '', label: 'Select size' },
+                      { value: '1-10', label: '1-10' },
+                      { value: '11-50', label: '11-50' },
+                      { value: '50+', label: '50+' }
+                    ]}
+                  />
                 </div>
               </div>
             )}
