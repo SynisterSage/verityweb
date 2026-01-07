@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node scripts/prerender.cjs",
+    "postbuild": "node scripts/prerender.cjs && cp public/sitemap.xml dist/sitemap.xml",
     "preview": "vite preview"
   },
   "dependencies": {
