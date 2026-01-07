@@ -54,13 +54,31 @@ export const Navbar: React.FC = () => {
   const applyTheme = (theme: 'dark' | 'light' | 'system') => {
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      // Temporarily disable transitions so the color switch is instant
+      try {
+        document.documentElement.classList.add('disable-transitions');
+      } catch {}
       document.documentElement.classList.toggle('dark', prefersDark);
       setIsDark(prefersDark);
       updateMetaThemeColor(prefersDark);
+      // keep transitions disabled slightly longer on slow devices, then restore
+      try {
+        window.setTimeout(() => {
+          requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('disable-transitions')));
+        }, 120);
+      } catch {}
     } else {
+      try {
+        document.documentElement.classList.add('disable-transitions');
+      } catch {}
       document.documentElement.classList.toggle('dark', theme === 'dark');
       setIsDark(theme === 'dark');
       updateMetaThemeColor(theme === 'dark');
+      try {
+        window.setTimeout(() => {
+          requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('disable-transitions')));
+        }, 120);
+      } catch {}
     }
   };
 
@@ -98,8 +116,16 @@ export const Navbar: React.FC = () => {
   const toggleTheme = () => {
     const nextIsDark = !isDark;
     setIsDark(nextIsDark);
+    try {
+      document.documentElement.classList.add('disable-transitions');
+    } catch {}
     document.documentElement.classList.toggle('dark', nextIsDark);
     updateMetaThemeColor(nextIsDark);
+    try {
+      window.setTimeout(() => {
+        requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('disable-transitions')));
+      }, 120);
+    } catch {}
     try {
       const consent = localStorage.getItem('verity_cookie_consent');
       if (consent === 'true') {
