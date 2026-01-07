@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Preserve smooth scrolling and custom scrollbar from original index.html */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar to match dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b111b;
+}
+::-webkit-scrollbar-thumb {
+  background: #202c3c;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2d6df6;
+}
