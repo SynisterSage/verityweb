@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         sitemap({
-          baseUrl: 'https://verityprotect.com',
+          baseUrl: 'https://www.verityprotect.com',
           routes,
           generateRobotsTxt: false,
         }),

@@ -89,7 +89,7 @@ function writeForRoute(template, route, metaHtml) {
 function main() {
   const seo = loadSeo();
   const template = readTemplate();
-  const baseUrl = 'https://verityprotect.com';
+  const baseUrl = 'https://www.verityprotect.com';
 
   Object.keys(seo).forEach((route) => {
     const data = seo[route];
