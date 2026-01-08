@@ -18,6 +18,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
     const hoverQuery = window.matchMedia ? window.matchMedia('(hover: hover)') : { matches: false } as MediaQueryList;
     const reduceMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false } as MediaQueryList;
     let observer: IntersectionObserver | null = null;
+    let debounceTimer: number | null = null;
 
     // If user prefers reduced motion, skip autoplay/on-scroll activation
     if (reduceMotionQuery.matches) return;
@@ -27,8 +28,13 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
        // Touch device logic: trigger when in view
        observer = new IntersectionObserver((entries) => {
          entries.forEach(entry => {
-           // keep updates minimal — only toggle on meaningful visibility
-           setIsActive(entry.isIntersecting);
+           // Debounce visibility toggles to avoid rapid state churn on mobile
+           const visible = entry.isIntersecting;
+           if (debounceTimer) window.clearTimeout(debounceTimer);
+           debounceTimer = window.setTimeout(() => {
+             setIsActive(visible);
+             debounceTimer = null;
+           }, 120);
          });
        }, { threshold: 0.6 }); // Trigger when 60% visible
        
@@ -39,6 +45,8 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
 
     return () => {
       if (observer) observer.disconnect();
+      // clear any pending debounce
+      try { if (debounceTimer) window.clearTimeout(debounceTimer); } catch {}
     };
   }, []);
 

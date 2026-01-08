@@ -6,17 +6,17 @@ interface GatekeeperProps {
 }
 
 export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
-  const [pin, setPin] = useState<string>('');
-  const [status, setStatus] = useState<'idle' | 'input' | 'bridging' | 'voicemail'>('idle');
-  const [activeKey, setActiveKey] = useState<string | null>(null);
+    const [pin, setPin] = useState<string>('');
+    const [status, setStatus] = useState<'idle' | 'input' | 'bridging' | 'voicemail'>('idle');
     const dotsRef = React.useRef<HTMLDivElement | null>(null);
+    const rootRef = React.useRef<HTMLDivElement | null>(null);
+    const [activeKey, setActiveKey] = React.useState<string | null>(null);
 
   useEffect(() => {
     if (!isActive) {
         // Reset when not active
         setPin('');
         setStatus('idle');
-        setActiveKey(null);
         return;
     }
 
@@ -30,7 +30,6 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
     if (reduceMotion || lowPower) {
         setPin('1234');
         setStatus('bridging');
-        setActiveKey(null);
         return;
     }
 
@@ -39,6 +38,8 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
         let onEndRef: (() => void) | null = null;
 
         const runSequence = async () => {
+                // Clear any previous pin so dots start empty, then delay before animation
+                setPin('');
                 // Slightly longer initial delay for a calmer animation
                 await new Promise(r => setTimeout(r, 500));
                 if (cancelled) return;
@@ -59,20 +60,21 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                     setPin('1234');
                     setStatus('bridging');
                     lastDot?.removeEventListener('animationend', onEndRef!);
-                    el.classList.remove('typing');
+                    // remove typing class from root
+                    rootRef.current?.classList.remove('typing');
+                    // clear any remaining timers and reset active key
                     timers.forEach(t => clearTimeout(t));
                     timers = [];
                     setActiveKey(null);
                 };
 
-                // Start the CSS animation by adding a class
-                el.classList.add('typing');
+                // Start the CSS animation by adding a class to the component root
+                rootRef.current?.classList.add('typing');
 
-                // Set lightweight timeouts to toggle activeKey for button highlight in sync with CSS
+                // schedule keypad highlights to match the dot animation
                 const keys = ['1','2','3','4'];
                 const delays = [160, 520, 880, 1240];
-                const animDuration = 340; // ms (matches CSS below)
-
+                const animDuration = 340;
                 for (let i = 0; i < keys.length; i++) {
                     timers.push(window.setTimeout(() => setActiveKey(keys[i]), delays[i]));
                     timers.push(window.setTimeout(() => setActiveKey(null), delays[i] + animDuration));
@@ -81,7 +83,8 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                 if (lastDot) {
                     lastDot.addEventListener('animationend', onEndRef);
                 } else {
-                    timers.push(window.setTimeout(() => onEndRef && onEndRef(), delays[delays.length - 1] + animDuration + 80));
+                    // fallback timeout
+                    timers.push(window.setTimeout(() => onEndRef && onEndRef(), 1500));
                 }
         };
 
@@ -89,19 +92,21 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
 
         return () => {
                 cancelled = true;
-                timers.forEach(t => clearTimeout(t));
-                timers = [];
                 const el = dotsRef.current;
                 if (el) {
                     const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
                     if (lastDot && onEndRef) lastDot.removeEventListener('animationend', onEndRef);
-                    el.classList.remove('typing');
+                    rootRef.current?.classList.remove('typing');
                 }
+                // clear any scheduled timers
+                timers.forEach(t => clearTimeout(t));
+                timers = [];
+                setActiveKey(null);
         };
   }, [isActive]);
 
     return (
-        <div className="w-[200px] translate-y-24 bg-light-card dark:bg-dark-card rounded-[1.5rem] p-3 shadow-sm border border-light-border dark:border-dark-border flex flex-col gap-3 relative select-none">
+        <div ref={rootRef} className="w-[200px] translate-y-24 bg-light-card dark:bg-dark-card rounded-[1.5rem] p-3 shadow-sm border border-light-border dark:border-dark-border flex flex-col gap-3 relative select-none">
 
         {/* Decorative Speaker Grill */}
         <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-light-bg dark:bg-dark-bg"></div>
@@ -125,10 +130,10 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                     </div>
                                         <div className="flex gap-2.5 h-3 items-center justify-center" ref={dotsRef}>
                                                         {Array(4).fill(0).map((_, i) => (
-                                                                 <div
-                                                                        key={i}
-                                                                        className={`dot w-2 h-2 rounded-full ${pin.length === 4 ? 'bg-brand-blue scale-110' : 'bg-light-muted dark:bg-dark-card/40'}`}
-                                                                 ></div>
+                                                                                         <div
+                                                                                                key={i}
+                                                                                                className={`dot w-2 h-2 rounded-full ${pin.length === 4 ? 'bg-brand-blue scale-110' : 'bg-light-muted dark:bg-dark-card/40'}`}
+                                                                                         ></div>
                                                         ))}
                                                         <style>{`
                                                             @keyframes dotFill {
@@ -136,10 +141,10 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                                                                 60% { transform: scale(1.12); }
                                                                 100% { transform: scale(1.08); background-color: var(--dot-fill,#2d6dfa); }
                                                             }
-                                                            .typing .dot:nth-child(1) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 160ms; }
-                                                            .typing .dot:nth-child(2) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 520ms; }
-                                                            .typing .dot:nth-child(3) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 880ms; }
-                                                            .typing .dot:nth-child(4) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 1240ms; }
+                                                                                    .typing .dot:nth-child(1) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 160ms; }
+                                                                                                                    .typing .dot:nth-child(2) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 520ms; }
+                                                                                                                    .typing .dot:nth-child(3) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 880ms; }
+                                                                                                                    .typing .dot:nth-child(4) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 1240ms; }
                                                             @media (prefers-reduced-motion: reduce) {
                                                                 .typing .dot { animation: none !important; }
                                                             }
@@ -150,20 +155,20 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
         </div>
 
         {/* Keypad Grid */}
-        <div className="grid grid-cols-3 gap-1.5 px-1">
+        <div className="grid grid-cols-3 gap-1.5 px-1 keypad">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <button
                    key={num}
                    type="button"
                    aria-hidden
                    disabled
-                         className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 border ${activeKey === num.toString() ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}
+                         className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-transform duration-200 border-transparent focus:outline-none focus:ring-0 ${activeKey === num.toString() ? 'bg-brand-blue text-white transform scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text'}`}
                 >
                     {num}
                 </button>
             ))}
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">*</div>
-            <button type="button" aria-hidden disabled className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 border ${activeKey === '0' ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}>0</button>
+            <button type="button" aria-hidden disabled className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-transform duration-200 border-transparent focus:outline-none focus:ring-0 ${activeKey === '0' ? 'bg-brand-blue text-white transform scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text'}`}>0</button>
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">#</div>
         </div>
 
