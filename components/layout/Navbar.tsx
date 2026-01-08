@@ -155,11 +155,13 @@ export const Navbar: React.FC = () => {
   };
 
   // We restrict transition properties to avoid animating padding-right which causes visual jumps when scrollbar disappears
+  // Keep mobile vertical padding stable when the mobile menu opens to prevent header shift.
+  const compactVisual = isScrolled || mobileMenuOpen;
   const navClasses = `fixed top-0 left-0 right-0 z-50 duration-300 border-b transition-[padding-top,padding-bottom,background-color,border-color,box-shadow,backdrop-filter] ${
-    isScrolled || mobileMenuOpen 
-      ? 'bg-light-bg/95 dark:bg-dark-bg/95 backdrop-blur-xl border-light-border dark:border-dark-border py-3 lg:py-4 shadow-sm' 
-      : 'bg-transparent border-transparent py-4 lg:py-6'
-  }`;
+    compactVisual
+      ? 'bg-light-bg/95 dark:bg-dark-bg/95 backdrop-blur-xl border-light-border dark:border-dark-border shadow-sm'
+      : 'bg-transparent border-transparent'
+  } ${isScrolled ? 'py-3 lg:py-4' : 'py-4 lg:py-6'}`;
 
   return (
     <>
