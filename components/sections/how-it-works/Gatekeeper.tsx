@@ -9,6 +9,7 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
   const [pin, setPin] = useState<string>('');
   const [status, setStatus] = useState<'idle' | 'input' | 'bridging' | 'voicemail'>('idle');
   const [activeKey, setActiveKey] = useState<string | null>(null);
+    const dotsRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!isActive) {
@@ -33,36 +34,58 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
         return;
     }
 
-    let cancelled = false;
-    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        let cancelled = false;
 
-    const runSequence = async () => {
-        // Initial delay
-        await wait(300);
-        if (cancelled) return;
+        const runSequence = async () => {
+                // Initial delay before starting animation
+                await new Promise(r => setTimeout(r, 420));
+                if (cancelled) return;
 
-        // We'll do a short animated sequence but fewer state churns
-        const keys = ['1','2','3','4'];
-        setStatus('input');
-        for (let i = 0; i < keys.length; i++) {
-            if (cancelled) return;
-            setActiveKey(keys[i]);
-            await wait(140);
-            if (cancelled) return;
-            setPin(prev => prev + keys[i]);
-            setActiveKey(null);
-            await wait(160);
-        }
+                // Use a CSS-driven animation to reduce React updates on mobile.
+                setStatus('input');
 
-        if (cancelled) return;
-        setStatus('bridging');
-    };
+                const el = dotsRef.current;
+                if (!el) {
+                    // Fallback: simple JS fill
+                    setPin('1234');
+                    setStatus('bridging');
+                    return;
+                }
 
-    runSequence();
+                const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
 
-    return () => {
-        cancelled = true;
-    };
+                const onEnd = () => {
+                    if (cancelled) return;
+                    // finalize state once animation completes
+                    setPin('1234');
+                    setStatus('bridging');
+                    lastDot?.removeEventListener('animationend', onEnd);
+                    el.classList.remove('typing');
+                };
+
+                // Start the CSS animation by adding a class
+                el.classList.add('typing');
+                // Listen for end on the last dot
+                if (lastDot) {
+                    lastDot.addEventListener('animationend', onEnd);
+                } else {
+                    // fallback timeout
+                    setTimeout(() => onEnd(), 900);
+                }
+        };
+
+        runSequence();
+
+        return () => {
+                cancelled = true;
+                // cleanup class/listeners
+                const el = dotsRef.current;
+                if (el) {
+                    const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
+                    lastDot?.removeEventListener('animationend', () => {});
+                    el.classList.remove('typing');
+                }
+        };
   }, [isActive]);
 
     return (
@@ -88,14 +111,28 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                     <div className="text-[9px] text-light-muted uppercase font-bold tracking-widest mb-1.5 flex items-center gap-1">
                         <Lock size={8} /> Enter PIN
                     </div>
-                    <div className="flex gap-2.5 h-3 items-center justify-center">
-                        {Array(4).fill(0).map((_, i) => (
-                             <div 
-                                key={i} 
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${i < pin.length ? 'bg-brand-blue scale-110 shadow-[0_0_8px_rgba(45,109,246,0.6)]' : 'bg-light-muted dark:bg-dark-card/40'}`}
-                             ></div>
-                        ))}
-                    </div>
+                                        <div className="flex gap-2.5 h-3 items-center justify-center" ref={dotsRef}>
+                                                {Array(4).fill(0).map((_, i) => (
+                                                         <div
+                                                                key={i}
+                                                                className={`dot w-2 h-2 rounded-full ${pin.length === 4 ? 'bg-brand-blue scale-110 shadow-[0_0_8px_rgba(45,109,246,0.6)]' : 'bg-light-muted dark:bg-dark-card/40'} ${pin.length === 4 ? 'transition-all duration-300' : ''}`}
+                                                         ></div>
+                                                ))}
+                                                <style>{`
+                                                    @keyframes dotFill {
+                                                        0% { transform: scale(1); background-color: var(--dot-empty,#cbd5e1); }
+                                                        60% { transform: scale(1.15); }
+                                                        100% { transform: scale(1.1); background-color: var(--dot-fill,#2d6dfa); }
+                                                    }
+                                                    .typing .dot:nth-child(1) { animation: dotFill 260ms ease forwards; animation-delay: 120ms; }
+                                                    .typing .dot:nth-child(2) { animation: dotFill 260ms ease forwards; animation-delay: 360ms; }
+                                                    .typing .dot:nth-child(3) { animation: dotFill 260ms ease forwards; animation-delay: 600ms; }
+                                                    .typing .dot:nth-child(4) { animation: dotFill 260ms ease forwards; animation-delay: 840ms; }
+                                                    @media (prefers-reduced-motion: reduce) {
+                                                        .typing .dot { animation: none !important; }
+                                                    }
+                                                `}</style>
+                                        </div>
                 </div>
             )}
         </div>
@@ -108,13 +145,13 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                    type="button"
                    aria-hidden
                    disabled
-                   className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-150 border ${activeKey === num.toString() ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}
+                         className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 border ${activeKey === num.toString() ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}
                 >
                     {num}
                 </button>
             ))}
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">*</div>
-            <button type="button" aria-hidden disabled className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-150 border ${activeKey === '0' ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}>0</button>
+            <button type="button" aria-hidden disabled className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 border ${activeKey === '0' ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}>0</button>
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">#</div>
         </div>
 
