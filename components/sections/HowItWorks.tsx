@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, PhoneOff, ShieldCheck } from 'lucide-react';
+// removed unused lucide-react icons (no visual usage in this file)
 import { SetupForwarding } from './how-it-works/SetupForwarding';
 import { TrustedContacts } from './how-it-works/TrustedContacts';
 import { FamilyOversight } from './how-it-works/FamilyOversight';
@@ -45,7 +45,7 @@ export const HowItWorks: React.FC = () => {
           <CardContainer
             stepNumber={2}
             title="Trusted Contacts"
-            description="Import contacts from your right from your phone. Calls from trusted contacts will skip screening and are never recorded."
+            description="Import contacts from your phone. Calls from trusted contacts will skip screening and are never recorded."
           >
             <TrustedContacts />
           </CardContainer>

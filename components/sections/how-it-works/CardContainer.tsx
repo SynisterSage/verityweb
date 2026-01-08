@@ -12,24 +12,23 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     // Check if device supports hover
-    const hoverQuery = window.matchMedia('(hover: hover)');
-    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
+    const hoverQuery = window.matchMedia ? window.matchMedia('(hover: hover)') : { matches: false } as MediaQueryList;
+    const reduceMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false } as MediaQueryList;
     let observer: IntersectionObserver | null = null;
 
     // If user prefers reduced motion, skip autoplay/on-scroll activation
     if (reduceMotionQuery.matches) return;
 
-    if (!hoverQuery.matches) {
+    // Only use IntersectionObserver on non-hover devices and when supported
+    if (!hoverQuery.matches && typeof IntersectionObserver !== 'undefined') {
        // Touch device logic: trigger when in view
        observer = new IntersectionObserver((entries) => {
          entries.forEach(entry => {
-           if (entry.isIntersecting) {
-             setIsActive(true);
-           } else {
-             setIsActive(false);
-           }
+           // keep updates minimal — only toggle on meaningful visibility
+           setIsActive(entry.isIntersecting);
          });
        }, { threshold: 0.6 }); // Trigger when 60% visible
        
@@ -44,13 +43,13 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
   }, []);
 
   const handleMouseEnter = () => {
-    if (window.matchMedia('(hover: hover)').matches) {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
       setIsActive(true);
     }
   };
 
   const handleMouseLeave = () => {
-    if (window.matchMedia('(hover: hover)').matches) {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
       setIsActive(false);
     }
   };

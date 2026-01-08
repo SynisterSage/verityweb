@@ -14,9 +14,9 @@ export const TrustedContacts: React.FC<TrustedContactsProps> = ({ isActive = fal
 
   return (
      <div className="w-full max-w-[260px] space-y-3">
-        {contacts.map((contact, i) => (
+        {contacts.map((contact) => (
            <div 
-             key={i} 
+             key={contact.name} 
              className={`flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#121a26] border transition-all duration-500 ${
                isActive 
                  ? 'border-brand-blue/30 shadow-[0_0_15px_rgba(45,109,246,0.1)]' 

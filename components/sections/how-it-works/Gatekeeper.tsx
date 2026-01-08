@@ -19,54 +19,43 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
         return;
     }
 
+    if (typeof window === 'undefined') return;
+
+    const nav: any = typeof navigator !== 'undefined' ? navigator : {};
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lowPower = (nav.deviceMemory && nav.deviceMemory <= 1) || (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2) || (nav.connection && nav.connection.saveData);
+
+    // Fast-path for low-power or reduced-motion devices: skip heavy animation sequence
+    if (reduceMotion || lowPower) {
+        setPin('1234');
+        setStatus('bridging');
+        setActiveKey(null);
+        return;
+    }
+
     let cancelled = false;
     const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     const runSequence = async () => {
         // Initial delay
-        await wait(500);
+        await wait(300);
         if (cancelled) return;
 
-        // Key 1
-        setActiveKey('1');
-        await wait(150);
-        if (cancelled) return;
-        setPin('1');
+        // We'll do a short animated sequence but fewer state churns
+        const keys = ['1','2','3','4'];
         setStatus('input');
-        setActiveKey(null);
-        await wait(300);
-        if (cancelled) return;
+        for (let i = 0; i < keys.length; i++) {
+            if (cancelled) return;
+            setActiveKey(keys[i]);
+            await wait(140);
+            if (cancelled) return;
+            setPin(prev => prev + keys[i]);
+            setActiveKey(null);
+            await wait(160);
+        }
 
-        // Key 2
-        setActiveKey('2');
-        await wait(150);
         if (cancelled) return;
-        setPin('12');
-        setActiveKey(null);
-        await wait(300);
-        if (cancelled) return;
-
-        // Key 3
-        setActiveKey('3');
-        await wait(150);
-        if (cancelled) return;
-        setPin('123');
-        setActiveKey(null);
-        await wait(300);
-        if (cancelled) return;
-
-        // Key 4
-        setActiveKey('4');
-        await wait(150);
-        if (cancelled) return;
-        setPin('1234');
-        setActiveKey(null);
-        await wait(400);
-        if (cancelled) return;
-
-        // Success
         setStatus('bridging');
-        // Animation ends here, no loop
     };
 
     runSequence();
@@ -114,15 +103,18 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
         {/* Keypad Grid */}
         <div className="grid grid-cols-3 gap-1.5 px-1">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                <div
+                <button
                    key={num}
+                   type="button"
+                   aria-hidden
+                   disabled
                    className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-150 border ${activeKey === num.toString() ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}
                 >
                     {num}
-                </div>
+                </button>
             ))}
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">*</div>
-            <div className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-150 border ${activeKey === '0' ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}>0</div>
+            <button type="button" aria-hidden disabled className={`aspect-square rounded-full flex items-center justify-center text-sm font-medium transition-all duration-150 border ${activeKey === '0' ? 'bg-brand-blue text-white border-brand-blue shadow-lg scale-95' : 'bg-light-card dark:bg-dark-card/50 text-light-text dark:text-dark-text border-transparent'}`}>0</button>
             <div className="aspect-square flex items-center justify-center text-light-muted dark:text-dark-text text-[10px]">#</div>
         </div>
 

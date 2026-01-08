@@ -9,11 +9,16 @@ export const SetupForwarding: React.FC<SetupForwardingProps> = ({ isActive = fal
   const [isForwarded, setIsForwarded] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     if (isActive) {
       const timer = setTimeout(() => {
-        setIsForwarded(true);
+        // use rAF to avoid jank if the browser is busy
+        requestAnimationFrame(() => setIsForwarded(true));
       }, 500);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+      };
     } else {
       setIsForwarded(false);
     }

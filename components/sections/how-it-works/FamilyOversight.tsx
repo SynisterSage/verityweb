@@ -30,9 +30,9 @@ export const FamilyOversight: React.FC<FamilyOversightProps> = ({ isActive = fal
           </div>
 
           <div className="space-y-3">
-             {members.map((m, i) => (
-                <div 
-                    key={i} 
+             {members.map((m) => (
+               <div 
+                  key={m.name} 
                     className="flex items-center justify-between"
                 >
                    <div className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export const FamilyOversight: React.FC<FamilyOversightProps> = ({ isActive = fal
                          <div className="text-[10px] text-light-muted dark:text-dark-muted">{m.role}</div>
                       </div>
                    </div>
-                   {i === 0 && (
+                   {m === 0 && (
                        <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all duration-500 ${
                           isActive 
                             ? 'bg-brand-blue/20 text-brand-blue border-brand-blue/30 shadow-[0_0_8px_rgba(45,109,246,0.25)]' 

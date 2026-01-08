@@ -67,20 +67,23 @@ export const AIScreening: React.FC<AIScreeningProps> = ({ isActive = false }) =>
                    {step === 0 ? 'Analyzing...' : step === 1 ? 'Escalating...' : '92/100'}
                 </span>
              </div>
-                   <div className="h-1.5 w-full bg-gray-200 dark:bg-[#202c3c] rounded-full overflow-hidden transition-colors duration-300 relative">
+                   <div
+                      className="h-1.5 w-full bg-gray-200 dark:bg-[#202c3c] rounded-full overflow-hidden transition-colors duration-300 relative"
+                      role="progressbar"
+                      aria-label="Fraud detection progress"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={step === 2 ? 92 : step === 1 ? 65 : 15}
+                   >
                         {/*
                            Use a transform-based animation (scaleX) for the fill so the browser can promote
                            it to the compositor and avoid main-thread layout thrashing. The animation itself
                            is CSS-driven; JS only toggles the animation class and listens for completion.
                         */}
                         <div
-                            ref={fillRef}
-                            role="progressbar"
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-valuenow={step === 2 ? 92 : step === 1 ? 65 : 15}
-                            className={`h-full rounded-full transform origin-left will-change-transform ${progressActive ? 'progress-animate' : ''} ${step === 2 ? 'bg-red-500 dark:bg-[#ff8a8a] shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-brand-blue'}`}
-                            style={{ transform: 'scaleX(0.15)' }}
+                           ref={fillRef}
+                           className={`h-full rounded-full transform origin-left will-change-transform ${progressActive ? 'progress-animate' : ''} ${step === 2 ? 'bg-red-500 dark:bg-[#ff8a8a] shadow-[0_0_10px_rgba(239,68,68,0.4)]' : 'bg-brand-blue'}`}
+                           style={{ transform: 'scaleX(0.15)' }}
                         ></div>
 
                         {/* Inline keyframes scoped to this component to avoid global CSS changes */}
