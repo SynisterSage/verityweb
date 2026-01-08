@@ -35,18 +35,18 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
     }
 
         let cancelled = false;
+        let timers: number[] = [];
+        let onEndRef: (() => void) | null = null;
 
         const runSequence = async () => {
-                // Initial delay before starting animation
-                await new Promise(r => setTimeout(r, 420));
+                // Slightly longer initial delay for a calmer animation
+                await new Promise(r => setTimeout(r, 500));
                 if (cancelled) return;
 
-                // Use a CSS-driven animation to reduce React updates on mobile.
                 setStatus('input');
 
                 const el = dotsRef.current;
                 if (!el) {
-                    // Fallback: simple JS fill
                     setPin('1234');
                     setStatus('bridging');
                     return;
@@ -54,38 +54,34 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
 
                 const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
 
-                const timers: number[] = [];
-                const onEnd = () => {
+                onEndRef = () => {
                     if (cancelled) return;
-                    // finalize state once animation completes
                     setPin('1234');
                     setStatus('bridging');
-                    lastDot?.removeEventListener('animationend', onEnd);
+                    lastDot?.removeEventListener('animationend', onEndRef!);
                     el.classList.remove('typing');
-                    // clear any remaining timers
                     timers.forEach(t => clearTimeout(t));
+                    timers = [];
                     setActiveKey(null);
                 };
 
                 // Start the CSS animation by adding a class
                 el.classList.add('typing');
 
-                // Also set lightweight timeouts to toggle activeKey for button highlight
+                // Set lightweight timeouts to toggle activeKey for button highlight in sync with CSS
                 const keys = ['1','2','3','4'];
-                const delays = [120, 360, 600, 840];
+                const delays = [160, 520, 880, 1240];
+                const animDuration = 340; // ms (matches CSS below)
+
                 for (let i = 0; i < keys.length; i++) {
-                    // highlight key
                     timers.push(window.setTimeout(() => setActiveKey(keys[i]), delays[i]));
-                    // clear highlight shortly after
-                    timers.push(window.setTimeout(() => setActiveKey(null), delays[i] + 220));
+                    timers.push(window.setTimeout(() => setActiveKey(null), delays[i] + animDuration));
                 }
 
-                // Listen for end on the last dot
                 if (lastDot) {
-                    lastDot.addEventListener('animationend', onEnd);
+                    lastDot.addEventListener('animationend', onEndRef);
                 } else {
-                    // fallback timeout
-                    timers.push(window.setTimeout(() => onEnd(), 1200));
+                    timers.push(window.setTimeout(() => onEndRef && onEndRef(), delays[delays.length - 1] + animDuration + 80));
                 }
         };
 
@@ -93,11 +89,12 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
 
         return () => {
                 cancelled = true;
-                // cleanup class/listeners
+                timers.forEach(t => clearTimeout(t));
+                timers = [];
                 const el = dotsRef.current;
                 if (el) {
                     const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
-                    lastDot?.removeEventListener('animationend', () => {});
+                    if (lastDot && onEndRef) lastDot.removeEventListener('animationend', onEndRef);
                     el.classList.remove('typing');
                 }
         };
@@ -127,26 +124,26 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                         <Lock size={8} /> Enter PIN
                     </div>
                                         <div className="flex gap-2.5 h-3 items-center justify-center" ref={dotsRef}>
-                                                {Array(4).fill(0).map((_, i) => (
-                                                         <div
-                                                                key={i}
-                                                                className={`dot w-2 h-2 rounded-full ${pin.length === 4 ? 'bg-brand-blue scale-110 shadow-[0_0_8px_rgba(45,109,246,0.6)]' : 'bg-light-muted dark:bg-dark-card/40'} ${pin.length === 4 ? 'transition-all duration-300' : ''}`}
-                                                         ></div>
-                                                ))}
-                                                <style>{`
-                                                    @keyframes dotFill {
-                                                        0% { transform: scale(1); background-color: var(--dot-empty,#cbd5e1); }
-                                                        60% { transform: scale(1.15); }
-                                                        100% { transform: scale(1.1); background-color: var(--dot-fill,#2d6dfa); }
-                                                    }
-                                                    .typing .dot:nth-child(1) { animation: dotFill 260ms ease forwards; animation-delay: 120ms; }
-                                                    .typing .dot:nth-child(2) { animation: dotFill 260ms ease forwards; animation-delay: 360ms; }
-                                                    .typing .dot:nth-child(3) { animation: dotFill 260ms ease forwards; animation-delay: 600ms; }
-                                                    .typing .dot:nth-child(4) { animation: dotFill 260ms ease forwards; animation-delay: 840ms; }
-                                                    @media (prefers-reduced-motion: reduce) {
-                                                        .typing .dot { animation: none !important; }
-                                                    }
-                                                `}</style>
+                                                        {Array(4).fill(0).map((_, i) => (
+                                                                 <div
+                                                                        key={i}
+                                                                        className={`dot w-2 h-2 rounded-full ${pin.length === 4 ? 'bg-brand-blue scale-110' : 'bg-light-muted dark:bg-dark-card/40'}`}
+                                                                 ></div>
+                                                        ))}
+                                                        <style>{`
+                                                            @keyframes dotFill {
+                                                                0% { transform: scale(1); background-color: var(--dot-empty,#cbd5e1); }
+                                                                60% { transform: scale(1.12); }
+                                                                100% { transform: scale(1.08); background-color: var(--dot-fill,#2d6dfa); }
+                                                            }
+                                                            .typing .dot:nth-child(1) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 160ms; }
+                                                            .typing .dot:nth-child(2) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 520ms; }
+                                                            .typing .dot:nth-child(3) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 880ms; }
+                                                            .typing .dot:nth-child(4) { animation: dotFill 340ms cubic-bezier(.2,.9,.3,1) forwards; animation-delay: 1240ms; }
+                                                            @media (prefers-reduced-motion: reduce) {
+                                                                .typing .dot { animation: none !important; }
+                                                            }
+                                                        `}</style>
                                         </div>
                 </div>
             )}
