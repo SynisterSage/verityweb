@@ -37,10 +37,10 @@ export const FamilyOversight: React.FC<FamilyOversightProps> = ({ isActive = fal
                 >
                    <div className="flex items-center gap-3">
                                  <div
-                                    className={`w-8 h-8 rounded-full ${m.color} text-white flex items-center justify-center text-xs font-bold ring-1 ring-white/5 transition-transform transition-colors duration-200 ${
-                                       isActive ? 'scale-105 ring-2 ring-brand-blue/20' : ''
+                                    className={`w-8 h-8 rounded-full ${m.color} text-white flex items-center justify-center text-xs font-bold border transition-transform duration-150 ease-out ${
+                                       isActive ? 'scale-105 border-brand-blue' : 'border-transparent'
                                  }`}
-                                    style={{ willChange: 'transform, opacity' }}
+                                    style={{ willChange: 'transform' }}
                                  >
                          {m.initial}
                       </div>

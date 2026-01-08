@@ -54,6 +54,7 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
 
                 const lastDot = el.querySelectorAll('.dot')[3] as HTMLElement | undefined;
 
+                const timers: number[] = [];
                 const onEnd = () => {
                     if (cancelled) return;
                     // finalize state once animation completes
@@ -61,16 +62,30 @@ export const Gatekeeper: React.FC<GatekeeperProps> = ({ isActive = false }) => {
                     setStatus('bridging');
                     lastDot?.removeEventListener('animationend', onEnd);
                     el.classList.remove('typing');
+                    // clear any remaining timers
+                    timers.forEach(t => clearTimeout(t));
+                    setActiveKey(null);
                 };
 
                 // Start the CSS animation by adding a class
                 el.classList.add('typing');
+
+                // Also set lightweight timeouts to toggle activeKey for button highlight
+                const keys = ['1','2','3','4'];
+                const delays = [120, 360, 600, 840];
+                for (let i = 0; i < keys.length; i++) {
+                    // highlight key
+                    timers.push(window.setTimeout(() => setActiveKey(keys[i]), delays[i]));
+                    // clear highlight shortly after
+                    timers.push(window.setTimeout(() => setActiveKey(null), delays[i] + 220));
+                }
+
                 // Listen for end on the last dot
                 if (lastDot) {
                     lastDot.addEventListener('animationend', onEnd);
                 } else {
                     // fallback timeout
-                    setTimeout(() => onEnd(), 900);
+                    timers.push(window.setTimeout(() => onEnd(), 1200));
                 }
         };
 
