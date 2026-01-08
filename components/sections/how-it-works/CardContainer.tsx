@@ -66,7 +66,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-3xl overflow-hidden shadow-sm hover:shadow-glow-sm transition-all duration-500 flex flex-col h-full">
+      <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-3xl overflow-hidden shadow-sm transition-colors duration-200 flex flex-col h-full">
         
         {/* Interactive Area */}
         <div className="bg-gray-50/50 dark:bg-[#0b111b] p-6 h-72 relative flex flex-col items-center justify-center overflow-hidden transition-colors duration-300 border-b border-light-border dark:border-dark-border">
