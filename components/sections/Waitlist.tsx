@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import Select from '../ui/Select';
 import { UserRole, WaitlistFormData } from '../../types';
@@ -16,6 +17,13 @@ export const Waitlist: React.FC = () => {
   });
   
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const navigate = useNavigate();
+
+  const routeAndTop = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(path);
+    try { window.scrollTo({ top: 0 }); } catch {}
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -239,7 +247,11 @@ export const Waitlist: React.FC = () => {
             </Button>
             
             <p className="text-sm text-center text-light-muted dark:text-dark-muted">
-              By joining, you agree to our Terms of Service and Privacy Policy.
+              By joining, you agree to our{' '}
+              <a href="/terms" onClick={routeAndTop('/terms')} className="text-brand-blue hover:underline">Terms of Service</a>{' '}
+              and{' '}
+              <a href="/privacy" onClick={routeAndTop('/privacy')} className="text-brand-blue hover:underline">Privacy Policy</a>
+              .
             </p>
 
             <p className="pt-4 text-center text-sm text-light-muted dark:text-dark-muted border-t border-light-border dark:border-dark-border mt-6">
