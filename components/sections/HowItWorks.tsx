@@ -37,7 +37,7 @@ export const HowItWorks: React.FC = () => {
           <CardContainer
             stepNumber={1}
             title="Connect Your Phone"
-            description="On signup you will receive a Verity number. Forward your phone to the provided number and we answer unknown callers so your loved one isn't disturbed."
+            description="On signup you will receive a Verity number. Forward your phone or landline to the provided number and let Verity screen unknown callers so your loved one isn't disturbed."
           >
             <SetupForwarding />
           </CardContainer>
@@ -45,7 +45,7 @@ export const HowItWorks: React.FC = () => {
           <CardContainer
             stepNumber={2}
             title="Trusted Contacts"
-            description="Import contacts from your phone. Calls from trusted contacts will skip screening and are never recorded."
+            description="Import contacts right from your phone. Calls from trusted contacts will skip screening and are never recorded."
           >
             <TrustedContacts />
           </CardContainer>
@@ -61,7 +61,7 @@ export const HowItWorks: React.FC = () => {
           <CardContainer
             stepNumber={4}
             title="The Gatekeeper"
-            description="Callers that are not trusted call Verity first: correct PINs bridge the call, otherwise they are asked to leave a voicemail."
+            description="Callers that are not trusted call Verity first. Correct PINs bridge the call, otherwise they are asked to leave a voicemail."
           >
             <Gatekeeper />
           </CardContainer>
@@ -77,7 +77,7 @@ export const HowItWorks: React.FC = () => {
           <CardContainer
             stepNumber={6}
             title="Family Review"
-            description="Account Members receive alerts with transcript snippets and a risk level, and mark calls Safe to add to Trusted or Fraud to block future calls."
+            description="Account Members receive alerts with transcript snippets and a risk level, and mark calls safe to add to trusted or fraud to block future calls."
           >
             <FamilyReview />
           </CardContainer>

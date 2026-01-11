@@ -55,7 +55,7 @@ export const Benefits: React.FC = () => {
               <span className="text-brand-blue font-semibold">Trusted contacts</span> ring through automatically. Unknown callers must enter a <span className="text-brand-blue font-semibold">Family PIN</span>. Entering the correct PIN connects the call. Entering the wrong PIN or skipping it asks the caller to leave a short <span className="text-brand-blue font-semibold">voicemail for family review</span>.
             </p>
             <p className="text-lg text-light-muted dark:text-dark-muted font-semibold">
-              Simple, automatic, and focused on keeping money and peace of mind with your family.
+              Simple, automatic, and focused on keeping money and your loved ones safe from fraud.
             </p>
           </div>
 
