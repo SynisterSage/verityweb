@@ -75,7 +75,7 @@ export const Footer: React.FC = () => {
 
             {/* Copyright - Visible on Desktop in this row */}
             <div className="hidden md:block text-sm text-light-muted dark:text-dark-muted">
-              © {new Date().getFullYear()} Verity Protect Inc.
+              © {new Date().getFullYear()} Verity Protect.
             </div>
 
           </div>
