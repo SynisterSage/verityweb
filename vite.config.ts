@@ -5,7 +5,7 @@ import sitemap from 'vite-plugin-sitemap';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
-    const routes = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist', '/privacy', '/terms'];
+    const dynamicRoutes = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist', '/privacy', '/terms'];
 
     return {
       server: {
@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         sitemap({
-          baseUrl: 'https://www.verityprotect.com',
-          routes,
+          hostname: 'https://www.verityprotect.com',
+          dynamicRoutes,
           generateRobotsTxt: false,
         }),
       ],

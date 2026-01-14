@@ -7,6 +7,7 @@ import { Benefits } from './components/sections/Benefits';
 import { Agencies } from './components/sections/Agencies';
 import { FAQ } from './components/sections/FAQ';
 import { Waitlist } from './components/sections/Waitlist';
+import { ExplainerVideo } from './components/sections/ExplainerVideo';
 import { Footer } from './components/layout/Footer';
 import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
 import { TermsOfService } from './components/legal/TermsOfService';
@@ -31,6 +32,7 @@ function Home({ scrollTo }: { scrollTo?: string }) {
   return (
     <div className="animate-in fade-in duration-500">
       <Hero />
+      <ExplainerVideo />
       <HowItWorks />
       <Benefits />
       <FAQ />
