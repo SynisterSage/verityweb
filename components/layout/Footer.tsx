@@ -1,5 +1,5 @@
 import React from 'react';
-import { Twitter, Instagram } from 'lucide-react';
+import { Twitter, Instagram, Facebook } from 'lucide-react';
 import { Logo } from '../visuals/Logo';
 import { useNavigate } from 'react-router-dom';
 
@@ -82,7 +82,7 @@ export const Footer: React.FC = () => {
 
           {/* Bottom Row: Socials */}
           <div className="flex flex-col items-center gap-4 relative">
-             <div className="flex gap-4 text-light-muted dark:text-dark-muted">
+            <div className="flex gap-4 text-light-muted dark:text-dark-muted">
               <a 
                 href="https://twitter.com/VerityProtect" 
                 target="_blank" 
@@ -100,6 +100,15 @@ export const Footer: React.FC = () => {
                 className="hover:text-brand-blue transition-colors"
               >
                 <Instagram size={18} />
+              </a>
+              <a 
+                href="https://www.facebook.com/profile.php?id=61586541604181" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Facebook"
+                className="hover:text-brand-blue transition-colors"
+              >
+                <Facebook size={18} />
               </a>
             </div>
 
