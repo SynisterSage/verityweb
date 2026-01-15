@@ -97,7 +97,7 @@ export const TermsOfService: React.FC = () => {
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-brand-blue">10. Contact</h2>
           <p className="leading-relaxed">
-            Questions about these Terms can be sent to <a href="mailto:verityprotect@gmail.com" className="text-brand-blue hover:underline">verityprotect@gmail.com</a>.
+            Questions about these Terms can be sent to <a href="mailto:support@verityprotect.com" className="text-brand-blue hover:underline">support@verityprotect.com</a>.
           </p>
         </section>
 

@@ -57,7 +57,7 @@ export const Waitlist: React.FC = () => {
     } catch (err) {
       console.error(err);
       setStatus('idle');
-      alert('There was an error submitting the form. Please try again or email verityprotect@gmail.com');
+      alert('There was an error submitting the form. Please try again or email support@verityprotect.com');
     }
   };
 
@@ -255,7 +255,7 @@ export const Waitlist: React.FC = () => {
             </p>
 
             <p className="pt-4 text-center text-sm text-light-muted dark:text-dark-muted border-t border-light-border dark:border-dark-border mt-6">
-               Questions? Email us directly at <a href="mailto:verityprotect@gmail.com" className="text-brand-blue hover:underline">verityprotect@gmail.com</a>
+               Questions? Email us directly at <a href="mailto:support@verityprotect.com" className="text-brand-blue hover:underline">support@verityprotect.com</a>
             </p>
           </form>
         )}

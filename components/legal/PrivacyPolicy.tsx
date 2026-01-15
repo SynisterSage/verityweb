@@ -162,7 +162,7 @@ export const PrivacyPolicy: React.FC = () => {
         <section className="border-t border-light-border dark:border-dark-border pt-12 mt-12">
            <h2 className="text-2xl font-bold text-light-text dark:text-dark-text mb-4">Contact Us</h2>
            <p className="text-light-muted dark:text-dark-muted">
-             If you have any questions about this Privacy Policy, please contact us at <a href="mailto:verityprotect@gmail.com" className="text-brand-blue hover:underline">verityprotect@gmail.com</a>.
+             If you have any questions about this Privacy Policy, please contact us at <a href="mailto:support@verityprotect.com" className="text-brand-blue hover:underline">support@verityprotect.com</a>.
            </p>
         </section>
       </div>
