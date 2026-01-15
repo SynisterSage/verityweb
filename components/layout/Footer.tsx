@@ -3,6 +3,23 @@ import { Twitter, Instagram, Facebook } from 'lucide-react';
 import { Logo } from '../visuals/Logo';
 import { useNavigate } from 'react-router-dom';
 
+// Minimal X logo (brand-style) to replace the old Twitter mark
+const XIcon = ({ size = 20 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M5 4h3.2l2.8 3.8L13.8 4H19l-5.1 6.6 5.4 7.4H16l-3.2-4.3L9.3 18H5l5.4-7.2L5 4Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
   const handlePrivacyClick = (e: React.MouseEvent) => {
@@ -84,13 +101,13 @@ export const Footer: React.FC = () => {
           <div className="flex flex-col items-center gap-4 relative">
             <div className="flex gap-4 text-light-muted dark:text-dark-muted">
               <a 
-                href="https://twitter.com/VerityProtect" 
+                href="https://x.com/VerityProtect" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                aria-label="Twitter"
+                aria-label="X"
                 className="hover:text-brand-blue transition-colors"
               >
-                <Twitter size={18} />
+                <XIcon />
               </a>
               <a 
                 href="https://instagram.com/VerityProtect" 
