@@ -7,21 +7,21 @@
       "config": { "distDir": "dist" }
     }
   ],
-  "headers": [
+  "routes": [
     {
-      "source": "/apple-app-site-association",
+      "src": "/apple-app-site-association",
       "headers": [
         { "key": "Content-Type", "value": "application/json" }
-      ]
+      ],
+      "dest": "/apple-app-site-association"
     },
     {
-      "source": "/.well-known/assetlinks.json",
+      "src": "/.well-known/assetlinks.json",
       "headers": [
         { "key": "Content-Type", "value": "application/json" }
-      ]
-    }
-  ],
-  "routes": [
+      ],
+      "dest": "/.well-known/assetlinks.json"
+    },
     { "handle": "filesystem" },
     {
       "src": "/(.*)",
