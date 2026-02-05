@@ -27,9 +27,10 @@ const stageContent = {
 };
 
 export const AuthCallbackPage: React.FC = () => {
+  const schemeUrl = 'verityprotect://auth/callback';
   const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
-  const [queryString, setQueryString] = useState('');
   const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
+  const [linkError, setLinkError] = useState<string | null>(null);
   const redirectedRef = useRef(false);
 
   useEffect(() => {
@@ -39,7 +40,19 @@ export const AuthCallbackPage: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const target = params.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
-    setQueryString(window.location.search);
+
+    const errorDescription = params.get('error_description');
+    const type = params.get('type');
+    if (errorDescription) {
+      setStage('failed');
+      setLinkError('This link was already used; request a fresh confirmation email.');
+      return;
+    }
+
+    if (type === 'oauth') {
+      window.location.href = schemeUrl;
+      return;
+    }
 
     const successTimer = window.setTimeout(() => setStage('success'), 1500);
     const failTimer = window.setTimeout(() => setStage(prev => (prev === 'connecting' ? 'failed' : prev)), 60_000);
@@ -50,7 +63,7 @@ export const AuthCallbackPage: React.FC = () => {
     };
   }, []);
 
-  const manualHref = `${redirectUri}${queryString}`;
+  const manualHref = schemeUrl;
   const { title, description, indicator, button } = stageContent[stage];
   const isSuccess = stage === 'success';
   const indicatorColor = stage === 'failed' ? 'bg-red-400' : isSuccess ? 'bg-emerald-400' : 'bg-brand-blue/70';
@@ -60,7 +73,7 @@ export const AuthCallbackPage: React.FC = () => {
   const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const handleManualRedirect = () => {
-    window.location.href = manualHref;
+    window.location.href = schemeUrl;
   };
 
   useEffect(() => {
@@ -174,6 +187,14 @@ export const AuthCallbackPage: React.FC = () => {
             <p className="text-xs text-light-muted dark:text-light-muted/90">
               If the app doesn’t open automatically, tap the button above.
             </p>
+            {linkError && (
+              <div className="mt-4 rounded-2xl border border-red-200/60 bg-red-50/60 px-4 py-3 text-sm text-red-800 dark:border-red-500/60 dark:bg-red-900/50 dark:text-red-200">
+                <p className="font-semibold">Link expired</p>
+                <p className="text-[13px] text-red-800/80 dark:text-red-200/80">
+                  This confirmation link was already used. Please request a fresh email or open the app manually.
+                </p>
+              </div>
+            )}
             {isDesktop && (
             <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/20 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
