@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loader2, ShieldCheck } from 'lucide-react';
+import QRCode from 'qrcode';
+import { ClipboardCopy, Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 const FALLBACK_REDIRECT = 'verityprotect://auth/callback';
 
 const stageContent = {
-  verifying: {
-    title: 'Verifying Identity',
-    description: 'We’re confirming your credentials and returning you to the Verity Protect app.',
-    indicator: 'Encrypted redirect in progress',
-    button: 'Opening App...',
+  connecting: {
+    title: 'Connecting to Verity Protect…',
+    description: 'Awaiting your native app to open and claim this URL.',
+    indicator: 'Still checking the universal/app link',
+    button: 'Open the app',
   },
   success: {
     title: 'Secure Connection',
@@ -28,7 +29,7 @@ const stageContent = {
 export const AuthCallbackPage: React.FC = () => {
   const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
   const [queryString, setQueryString] = useState('');
-  const [stage, setStage] = useState<'verifying' | 'success' | 'failed'>('verifying');
+  const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
   const redirectedRef = useRef(false);
 
   useEffect(() => {
@@ -41,13 +42,7 @@ export const AuthCallbackPage: React.FC = () => {
     setQueryString(window.location.search);
 
     const successTimer = window.setTimeout(() => setStage('success'), 1500);
-    const failTimer = window.setTimeout(() => setStage(prev => (prev === 'verifying' ? 'failed' : prev)), 60_000);
-
-    try {
-      window.location.href = `${target}${window.location.search}`;
-    } catch (err) {
-      console.error('Redirect failed', err);
-    }
+    const failTimer = window.setTimeout(() => setStage(prev => (prev === 'connecting' ? 'failed' : prev)), 60_000);
 
     return () => {
       window.clearTimeout(successTimer);
@@ -59,14 +54,68 @@ export const AuthCallbackPage: React.FC = () => {
   const { title, description, indicator, button } = stageContent[stage];
   const isSuccess = stage === 'success';
   const indicatorColor = stage === 'failed' ? 'bg-red-400' : isSuccess ? 'bg-emerald-400' : 'bg-brand-blue/70';
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState(false);
+  const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const handleManualRedirect = () => {
     window.location.href = manualHref;
   };
 
+  useEffect(() => {
+    if (!manualHref || !isDesktop) {
+      setQrDataUrl(null);
+      return;
+    }
+
+    let cancelled = false;
+    QRCode.toDataURL(manualHref, { margin: 2, color: { dark: '#0b111b', light: '#f8fafc' } })
+      .then((url) => {
+        if (!cancelled) {
+          setQrDataUrl(url);
+          setQrError(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setQrError(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [manualHref, isDesktop]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const checkDesktop = () => {
+      const coarse = window.matchMedia('(pointer: coarse)').matches;
+      const small = window.innerWidth < 640;
+      setIsDesktop(!coarse && !small);
+    };
+
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    window.addEventListener('orientationchange', checkDesktop);
+    return () => {
+      window.removeEventListener('resize', checkDesktop);
+      window.removeEventListener('orientationchange', checkDesktop);
+    };
+  }, []);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(manualHref);
+      setCopied('copied');
+    } catch {
+      setCopied('failed');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg flex items-center justify-center px-4 py-24">
-      <div className="w-full max-w-[460px]">
+      <div className="w-full max-w-[520px] space-y-8">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-light-card dark:bg-dark-card/90 p-8 shadow-[0_30px_120px_rgba(3,6,15,0.6)] backdrop-blur-[24px] sm:px-10">
           <div className="absolute -left-16 top-4 h-48 w-48 rounded-full bg-brand-blue/10 blur-[80px]" />
           <div className="absolute right-[-20%] bottom-0 h-96 w-96 rounded-full bg-brand-blue/30 opacity-20 blur-[140px]" />
@@ -113,7 +162,7 @@ export const AuthCallbackPage: React.FC = () => {
             <Button
               size="lg"
               onClick={handleManualRedirect}
-              disabled={stage === 'verifying'}
+              disabled={stage === 'connecting'}
               className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
             >
               {button}
@@ -122,6 +171,42 @@ export const AuthCallbackPage: React.FC = () => {
             <p className="text-xs text-light-muted dark:text-light-muted/90">
               If the app doesn’t open automatically, tap the button above.
             </p>
+            {isDesktop && (
+              <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/10 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-light-muted dark:text-light-muted/70">
+                  Desktop? Scan this QR
+                </p>
+                <p className="text-[11px] text-light-muted dark:text-light-muted/70">
+                  Use your phone camera to open the Verity Protect app.
+                </p>
+                <div className="mt-3 flex items-center justify-center">
+                  {qrDataUrl ? (
+                    <img src={qrDataUrl} alt="Scan to open Verity Protect" className="h-36 w-36 rounded-2xl border border-white/20 bg-white" />
+                  ) : qrError ? (
+                    <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-red-300/50 bg-red-50 text-xs text-red-600">
+                      QR unavailable
+                    </div>
+                  ) : (
+                    <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-xs text-light-muted">
+                      Generating QR…
+                    </div>
+                  )}
+                </div>
+                <div className="mt-4 flex flex-col gap-2 text-xs text-light-muted dark:text-light-muted/80">
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-light-border/50 bg-light-card/50 px-4 py-2 text-[11px] uppercase tracking-[0.4em] text-light-text transition hover:border-light-border dark:border-dark-border/50 dark:bg-dark-card/50"
+                  >
+                    <ClipboardCopy className="h-4 w-4" />
+                    {copied === 'copied' ? 'Link copied' : 'Copy link'}
+                  </button>
+                  {copied === 'failed' && (
+                    <span className="text-[10px] text-red-400">Unable to copy—please copy manually</span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-12 border-t border-light-border dark:border-dark-border pt-6">
