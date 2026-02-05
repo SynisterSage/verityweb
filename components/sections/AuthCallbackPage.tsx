@@ -50,24 +50,31 @@ export const AuthCallbackPage: React.FC = () => {
     if (redirectedRef.current || typeof window === 'undefined') return;
     redirectedRef.current = true;
 
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get('email');
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const getParam = (key: string) => searchParams.get(key) ?? hashParams.get(key);
+
+    const email = getParam('email');
     if (email) {
       setEmailParam(email);
     }
-    const mode = params.get('mode');
+    const type = getParam('type');
+    const mode = getParam('mode');
     if (mode) {
       setModeParam(mode);
+    } else if (type === 'recovery') {
+      setModeParam('reset');
     }
-    const source = params.get('source');
+    const source = getParam('source');
     if (source) {
       setSourceParam(source);
+    } else if (type === 'recovery') {
+      setSourceParam('password');
     }
-    const target = params.get('redirect_to') || FALLBACK_REDIRECT;
+    const target = searchParams.get('redirect_to') || hashParams.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
 
-    const errorDescription = params.get('error_description');
-    const type = params.get('type');
+    const errorDescription = getParam('error_description');
     if (errorDescription) {
       setStage('failed');
       setLinkError('This link was already used; request a fresh confirmation email.');
@@ -92,19 +99,6 @@ export const AuthCallbackPage: React.FC = () => {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
     if (!hash) return;
-    const params = new URLSearchParams(hash.slice(1));
-    const email = params.get('email');
-    if (email) {
-      setEmailParam(email);
-    }
-    const mode = params.get('mode');
-    if (mode) {
-      setModeParam(mode);
-    }
-    const source = params.get('source');
-    if (source) {
-      setSourceParam(source);
-    }
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
 
