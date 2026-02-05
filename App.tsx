@@ -15,6 +15,7 @@ import { CookieConsent } from './components/ui/CookieConsent';
 import { initGA, pageview } from './src/analytics';
 import Page from './src/Page';
 import seo from './src/seo';
+import { AuthCallbackPage } from './components/sections/AuthCallbackPage';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -83,6 +84,17 @@ function App() {
           <Route path="/waitlist" element={<Page title="Join the waitlist" description="Sign up to join the Verity Protect waitlist"><Home scrollTo="#waitlist" /></Page>} />
           <Route path="/privacy" element={<div className="animate-in fade-in duration-500"><PrivacyPolicy /></div>} />
           <Route path="/terms" element={<div className="animate-in fade-in duration-500"><TermsOfService /></div>} />
+          <Route
+            path="/auth/callback"
+            element={
+              <Page
+                title="Auth Callback"
+                description="Landing page that immediately forwards Supabase magic links to the Verity Protect app."
+              >
+                <AuthCallbackPage />
+              </Page>
+            }
+          />
         </Routes>
       </main>
       <CookieConsent />

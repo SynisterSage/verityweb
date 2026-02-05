@@ -39,6 +39,11 @@ export const seo: Record<string, { title?: string; description?: string; ogImage
     description: "Verity Protect's terms of use and legal information.",
     ogImage: '/og-image.png',
   },
+  '/auth/callback': {
+    title: 'Auth Callback | Verity Protect',
+    description: 'Portal page that forwards Supabase auth links to the native Verity Protect app.',
+    ogImage: '/og-image.png',
+  },
 };
 
 export default seo;

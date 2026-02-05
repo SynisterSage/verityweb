@@ -95,3 +95,30 @@ body:not(.dark)::-webkit-scrollbar-thumb,
   -webkit-backdrop-filter: none !important;
   filter: none !important;
 }
+
+.calm-scale {
+  animation: calmPulse 1.5s cubic-bezier(0.32, 1, 0.2, 1) infinite alternate;
+}
+
+.calm-progress {
+  animation: calmProgress 1.5s cubic-bezier(0.32, 1, 0.2, 1) forwards;
+  transform-origin: left;
+}
+
+@keyframes calmPulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes calmProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

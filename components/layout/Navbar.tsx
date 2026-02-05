@@ -146,7 +146,7 @@ export const Navbar: React.FC = () => {
     // Navigate directly to the route (per-section pages)
     navigate(href);
   };
-  
+
   const goHome = () => {
     setMobileMenuOpen(false);
     // Always navigate to site root and scroll to top
@@ -207,12 +207,11 @@ export const Navbar: React.FC = () => {
               >
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              {isHome && (
+              {isHome ? (
                 <Button size="sm" onClick={() => handleNavClick('/waitlist')}>
                   Join Waitlist
                 </Button>
-              )}
-              {!isHome && (
+              ) : (
                 <Button size="sm" variant="outline" onClick={goHome}>
                   Back to Home
                 </Button>
