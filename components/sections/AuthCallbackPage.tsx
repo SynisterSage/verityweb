@@ -28,7 +28,7 @@ const stageContent = {
 
 export const AuthCallbackPage: React.FC = () => {
   const [emailParam, setEmailParam] = useState<string | null>(null);
-  const schemeUrl = React.useMemo(() => {
+  const schemeUrl = useMemo(() => {
     const params = new URLSearchParams({ source: 'confirmation' });
     if (emailParam) {
       params.set('email', emailParam);
@@ -74,6 +74,18 @@ export const AuthCallbackPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const params = new URLSearchParams(hash.slice(1));
+    const email = params.get('email');
+    if (email) {
+      setEmailParam(email);
+    }
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }, []);
+
   const manualHref = schemeUrl;
   const { title, description, indicator, button } = stageContent[stage];
   const isSuccess = stage === 'success';
@@ -82,6 +94,7 @@ export const AuthCallbackPage: React.FC = () => {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [autoRedirected, setAutoRedirected] = useState(false);
 
   const handleManualRedirect = () => {
     window.location.href = schemeUrl;
@@ -109,6 +122,15 @@ export const AuthCallbackPage: React.FC = () => {
       cancelled = true;
     };
   }, [manualHref, isDesktop]);
+
+  useEffect(() => {
+    if (stage !== 'success' || linkError || autoRedirected) return;
+    const timer = window.setTimeout(() => {
+      window.location.href = schemeUrl;
+      setAutoRedirected(true);
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [stage, linkError, schemeUrl, autoRedirected]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
