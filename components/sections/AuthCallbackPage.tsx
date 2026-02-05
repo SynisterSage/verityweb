@@ -150,11 +150,14 @@ export const AuthCallbackPage: React.FC = () => {
               </div>
               <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-light-border/60 dark:bg-white/10">
                 <div
-                  className={`absolute inset-0 origin-left rounded-full ${
-                    stage === 'failed'
-                      ? 'bg-gradient-to-r from-red-500 via-red-400 to-red-300'
-                      : 'bg-gradient-to-r from-brand-blue to-white'
-                  } transition-transform duration-[1500ms] ${isSuccess ? 'scale-x-100' : 'scale-x-0 calm-progress'}`}
+                  className={`absolute inset-0 origin-left rounded-full transition-transform duration-[1500ms] ${isSuccess ? 'scale-x-100' : 'scale-x-0 calm-progress'}`}
+                  style={{
+                    background: stage === 'failed'
+                      ? 'linear-gradient(90deg, rgba(239,68,68,1), rgba(252,165,165,1))'
+                      : isSuccess
+                        ? 'linear-gradient(90deg, rgba(16,185,129,1), rgba(34,197,94,1))'
+                        : 'linear-gradient(90deg, rgba(59,130,246,1), rgba(191,219,254,1))',
+                  }}
                 />
               </div>
             </div>
