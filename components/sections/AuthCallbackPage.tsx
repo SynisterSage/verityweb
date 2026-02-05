@@ -9,7 +9,7 @@ const stageContent = {
   connecting: {
     title: 'Connecting to Verity Protect…',
     description: 'Awaiting your native app to open and claim this URL.',
-    indicator: 'Still checking the universal/app link',
+    indicator: 'Checking the universal link',
     button: 'Open the app',
   },
   success: {
@@ -115,7 +115,7 @@ export const AuthCallbackPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg flex items-center justify-center px-4 py-24">
-      <div className="w-full max-w-[520px] space-y-8">
+      <div className="w-full max-w-[620px] space-y-8">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-light-card dark:bg-dark-card/90 p-8 shadow-[0_30px_120px_rgba(3,6,15,0.6)] backdrop-blur-[24px] sm:px-10">
           <div className="absolute -left-16 top-4 h-48 w-48 rounded-full bg-brand-blue/10 blur-[80px]" />
           <div className="absolute right-[-20%] bottom-0 h-96 w-96 rounded-full bg-brand-blue/30 opacity-20 blur-[140px]" />
@@ -172,11 +172,11 @@ export const AuthCallbackPage: React.FC = () => {
               If the app doesn’t open automatically, tap the button above.
             </p>
             {isDesktop && (
-              <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/10 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-light-muted dark:text-light-muted/70">
+            <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/20 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
                   Desktop? Scan this QR
                 </p>
-                <p className="text-[11px] text-light-muted dark:text-light-muted/70">
+                <p className="text-[11px] text-dark-muted dark:text-light-muted/80">
                   Use your phone camera to open the Verity Protect app.
                 </p>
                 <div className="mt-3 flex items-center justify-center">
@@ -193,14 +193,14 @@ export const AuthCallbackPage: React.FC = () => {
                   )}
                 </div>
                 <div className="mt-4 flex flex-col gap-2 text-xs text-light-muted dark:text-light-muted/80">
-                  <button
-                    type="button"
-                    onClick={handleCopyLink}
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-light-border/50 bg-light-card/50 px-4 py-2 text-[11px] uppercase tracking-[0.4em] text-light-text transition hover:border-light-border dark:border-dark-border/50 dark:bg-dark-card/50"
-                  >
-                    <ClipboardCopy className="h-4 w-4" />
-                    {copied === 'copied' ? 'Link copied' : 'Copy link'}
-                  </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-dark-border/80 dark:border-white/40 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.4em] text-[#0f172a] dark:text-white transition hover:border-brand-blue hover:text-brand-blue dark:hover:text-brand-blue"
+                >
+                <ClipboardCopy className="h-4 w-4" />
+                {copied === 'copied' ? 'Link copied' : 'Copy link'}
+              </button>
                   {copied === 'failed' && (
                     <span className="text-[10px] text-red-400">Unable to copy—please copy manually</span>
                   )}
@@ -210,12 +210,12 @@ export const AuthCallbackPage: React.FC = () => {
           </div>
 
           <div className="mt-12 border-t border-light-border dark:border-dark-border pt-6">
-            <div className="flex flex-col items-center gap-1 text-[12px] text-dark-muted dark:text-light-muted">
+            <div className="flex flex-col items-center gap-1 text-[11px] text-dark-muted dark:text-light-muted">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span>Protected by Verity Cloud</span>
+                <span className="font-semibold">Protected by Verity Cloud</span>
               </div>
-              <div className="text-[10px] uppercase tracking-[0.5em] text-dark-muted/70 dark:text-light-muted/70">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-dark-muted/70 dark:text-light-muted/70 text-center">
                 Global Security Mesh Active
               </div>
             </div>
