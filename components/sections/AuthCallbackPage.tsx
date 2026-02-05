@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { ClipboardCopy, Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -27,7 +27,14 @@ const stageContent = {
 };
 
 export const AuthCallbackPage: React.FC = () => {
-  const schemeUrl = 'verityprotect://auth/callback';
+  const [emailParam, setEmailParam] = useState<string | null>(null);
+  const schemeUrl = React.useMemo(() => {
+    const params = new URLSearchParams({ source: 'confirmation' });
+    if (emailParam) {
+      params.set('email', emailParam);
+    }
+    return `verityprotect://auth/callback?${params.toString()}`;
+  }, [emailParam]);
   const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
   const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -38,6 +45,10 @@ export const AuthCallbackPage: React.FC = () => {
     redirectedRef.current = true;
 
     const params = new URLSearchParams(window.location.search);
+    const email = params.get('email');
+    if (email) {
+      setEmailParam(email);
+    }
     const target = params.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
 
