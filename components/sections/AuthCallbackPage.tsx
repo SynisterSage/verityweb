@@ -28,13 +28,19 @@ const stageContent = {
 
 export const AuthCallbackPage: React.FC = () => {
   const [emailParam, setEmailParam] = useState<string | null>(null);
+  const [modeParam, setModeParam] = useState<string | null>(null);
+  const [sourceParam, setSourceParam] = useState<string>('confirmation');
   const schemeUrl = useMemo(() => {
-    const params = new URLSearchParams({ source: 'confirmation' });
+    const params = new URLSearchParams();
+    params.set('source', sourceParam || 'confirmation');
+    if (modeParam) {
+      params.set('mode', modeParam);
+    }
     if (emailParam) {
       params.set('email', emailParam);
     }
     return `verityprotect://auth/callback?${params.toString()}`;
-  }, [emailParam]);
+  }, [emailParam, modeParam, sourceParam]);
   const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
   const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
   const [linkError, setLinkError] = useState<string | null>(null);
@@ -48,6 +54,14 @@ export const AuthCallbackPage: React.FC = () => {
     const email = params.get('email');
     if (email) {
       setEmailParam(email);
+    }
+    const mode = params.get('mode');
+    if (mode) {
+      setModeParam(mode);
+    }
+    const source = params.get('source');
+    if (source) {
+      setSourceParam(source);
     }
     const target = params.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
@@ -82,6 +96,14 @@ export const AuthCallbackPage: React.FC = () => {
     const email = params.get('email');
     if (email) {
       setEmailParam(email);
+    }
+    const mode = params.get('mode');
+    if (mode) {
+      setModeParam(mode);
+    }
+    const source = params.get('source');
+    if (source) {
+      setSourceParam(source);
     }
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
