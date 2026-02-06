@@ -355,7 +355,7 @@ export const AuthCallbackPage: React.FC = () => {
                   className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
                 >
                   {resetState === 'submitting' ? 'Resetting password…' : 'Reset my password'}
-                </Button> border-dark-border/10 dark:border-white/20
+                </Button> 
               </form>
 
               {resetError && (
@@ -388,7 +388,7 @@ export const AuthCallbackPage: React.FC = () => {
                       onClick={() => {
                         window.location.href = '/';
                       }}
-                      className="text-sm text-dark-text dark:text-light-text"
+                      className="text-sm text-emerald-800 dark:text-emerald-200 border-emerald-300/60 dark:border-emerald-500/50 hover:bg-emerald-100/50 dark:hover:bg-emerald-900/40 hover:border-emerald-400 dark:hover:border-emerald-400"
                     >
                       Back to the homepage
                     </Button>
