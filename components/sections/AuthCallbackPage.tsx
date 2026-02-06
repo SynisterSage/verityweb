@@ -388,7 +388,7 @@ export const AuthCallbackPage: React.FC = () => {
                       onClick={() => {
                         window.location.href = '/';
                       }}
-                      className="text-sm text-emerald-800 dark:text-emerald-200 border-emerald-300/60 dark:border-emerald-500/50 hover:bg-emerald-100/50 dark:hover:bg-emerald-900/40 hover:border-emerald-400 dark:hover:border-emerald-400"
+                      className="text-sm text-emerald-800 dark:text-emerald-200 border-emerald-300/60 dark:border-emerald-500/50 hover:bg-emerald-100/50 dark:hover:bg-emerald-900/40 hover:border-emerald-400 dark:hover:border-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-200"
                     >
                       Back to the homepage
                     </Button>
