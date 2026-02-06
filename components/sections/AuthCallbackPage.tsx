@@ -160,16 +160,18 @@ export const AuthCallbackPage: React.FC = () => {
     setResetError(null);
 
     try {
+      const payload = {
+        token: resetToken,
+        new_password: newPassword,
+        email: emailParam ?? undefined,
+      };
+      console.log('AuthCallbackPage reset payload', payload);
       const response = await fetch('https://verityprotect.com/api/v1/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          token: resetToken,
-          new_password: newPassword,
-          email: emailParam ?? undefined,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
