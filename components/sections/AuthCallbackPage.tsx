@@ -103,6 +103,26 @@ export const AuthCallbackPage: React.FC = () => {
     if (email) {
       schemeParams.set('email', email);
     }
+    
+    // Pass through critical Supabase auth parameters for exchangeCodeForSession
+    const code = getParam('code');
+    const codeVerifier = getParam('code_verifier');
+    const accessToken = getParam('access_token');
+    const refreshToken = getParam('refresh_token');
+    
+    if (code) {
+      schemeParams.set('code', code);
+    }
+    if (codeVerifier) {
+      schemeParams.set('code_verifier', codeVerifier);
+    }
+    if (accessToken) {
+      schemeParams.set('access_token', accessToken);
+    }
+    if (refreshToken) {
+      schemeParams.set('refresh_token', refreshToken);
+    }
+    
     const immediateSchemeUrl = `verityprotect://auth/callback?${schemeParams.toString()}`;
 
     if (type === 'oauth') {
