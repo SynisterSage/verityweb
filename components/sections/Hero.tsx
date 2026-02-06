@@ -44,7 +44,7 @@ export const Hero: React.FC = () => {
 
             <p className="text-sm text-light-muted dark:text-dark-muted flex items-center gap-2 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-400">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Early access available for agencies
+              Facility partnerships available
             </p>
           </div>
 

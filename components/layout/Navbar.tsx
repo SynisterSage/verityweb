@@ -138,7 +138,7 @@ export const Navbar: React.FC = () => {
     { label: 'How it works', href: '/how-it-works' },
     { label: 'Benefits', href: '/benefits' },
     { label: 'FAQ', href: '/faq' },
-    { label: 'Agencies', href: '/agencies' },
+    { label: 'Facilities', href: '/agencies' },
   ];
 
   const handleNavClick = (href: string) => {

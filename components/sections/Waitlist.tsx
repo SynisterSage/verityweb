@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import Select from '../ui/Select';
 import { UserRole, WaitlistFormData } from '../../types';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
 export const Waitlist: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  
+  // Check URL for role parameter
+  const roleParam = searchParams.get('role');
+  const initialRole = roleParam === 'facility' || roleParam === 'agency' ? UserRole.AGENCY : 
+                      roleParam === 'caretaker' ? UserRole.CARETAKER :
+                      UserRole.FAMILY_MEMBER;
+
   const [formData, setFormData] = useState<WaitlistFormData>({
     name: '',
     email: '',
     phone: '',
     notes: '',
-    role: UserRole.FAMILY_MEMBER,
+    role: initialRole,
     organization: '',
     teamSize: ''
   });
+  
+  // Update role when URL param changes
+  useEffect(() => {
+    if (roleParam === 'facility' || roleParam === 'agency') {
+      setFormData(prev => ({ ...prev, role: UserRole.AGENCY }));
+    } else if (roleParam === 'caretaker') {
+      setFormData(prev => ({ ...prev, role: UserRole.CARETAKER }));
+    } else if (roleParam === 'family') {
+      setFormData(prev => ({ ...prev, role: UserRole.FAMILY_MEMBER }));
+    }
+  }, [roleParam]);
   
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const navigate = useNavigate();
@@ -74,7 +93,7 @@ export const Waitlist: React.FC = () => {
             Join the waitlist
           </h2>
           <p className="text-light-muted dark:text-dark-muted">
-            Secure your spot for early access. We are onboarding families and agencies on a rolling basis.
+            Secure your spot for early access. We are onboarding families on a rolling basis.
           </p>
         </div>
 
@@ -161,7 +180,7 @@ export const Waitlist: React.FC = () => {
                 {[
                   { val: UserRole.FAMILY_MEMBER, label: 'Family Member' },
                   { val: UserRole.CARETAKER, label: 'Caretaker' },
-                  { val: UserRole.AGENCY, label: 'Agency' }
+                  { val: UserRole.AGENCY, label: 'Facility' }
                 ].map((option) => (
                   <button
                     key={option.val}
@@ -179,12 +198,12 @@ export const Waitlist: React.FC = () => {
               </div>
             </div>
 
-            {/* Conditional Agency Fields */}
+            {/* Conditional Facility Fields */}
             {formData.role === UserRole.AGENCY && (
               <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-light-border dark:border-dark-border animate-in slide-in-from-top-2 fade-in duration-300">
                 <div>
                   <label htmlFor="organization" className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                    Organization Name
+                    Facility Name
                   </label>
                   <input
                     type="text"
@@ -192,14 +211,14 @@ export const Waitlist: React.FC = () => {
                     name="organization"
                     required
                     className="w-full px-4 py-3 rounded-xl bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border text-light-text dark:text-dark-text focus:ring-2 focus:ring-brand-blue focus:border-transparent outline-none transition-all"
-                    placeholder="Care Solutions Inc."
+                    placeholder="Sunset Senior Living"
                     value={formData.organization}
                     onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label htmlFor="teamSize" className="block text-sm font-medium text-light-text dark:text-dark-text mb-2">
-                    Clients / Team Size
+                    Resident Count
                   </label>
                   <Select
                     id="teamSize"
@@ -209,9 +228,10 @@ export const Waitlist: React.FC = () => {
                     onChange={handleChange}
                     options={[
                       { value: '', label: 'Select size' },
-                      { value: '1-10', label: '1-10' },
-                      { value: '11-50', label: '11-50' },
-                      { value: '50+', label: '50+' }
+                      { value: '50-100', label: '50-100' },
+                      { value: '100-200', label: '100-200' },
+                      { value: '200-500', label: '200-500' },
+                      { value: '500+', label: '500+' }
                     ]}
                   />
                 </div>
