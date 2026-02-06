@@ -20,8 +20,8 @@ export const seo: Record<string, { title?: string; description?: string; ogImage
     ogImage: '/og-image.png',
   },
   '/agencies': {
-    title: 'Agencies & Partners | Verity Protect',
-    description: "Resources for agencies and partners integrating Verity's call screening for vulnerable populations.",
+    title: 'Facility Partnerships | Verity Protect',
+    description: "Partner with Verity Protect to protect your residents from phone scams. Zero setup, no ongoing costs for your facility.",
     ogImage: '/og-image.png',
   },
   '/waitlist': {
