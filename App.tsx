@@ -89,7 +89,7 @@ function App() {
             element={
               <Page
                 title="Auth Callback"
-                description="Landing page that immediately forwards Supabase magic links to the Verity Protect app."
+                description="Handles Supabase magic links and password resets before redirecting users to the Verity Protect app."
               >
                 <AuthCallbackPage />
               </Page>

@@ -45,6 +45,12 @@ export const AuthCallbackPage: React.FC = () => {
   const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
   const [linkError, setLinkError] = useState<string | null>(null);
   const redirectedRef = useRef(false);
+  const [resetToken, setResetToken] = useState<string | null>(null);
+  const [resetState, setResetState] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const isResetFlow = modeParam === 'reset' && sourceParam === 'password';
 
   useEffect(() => {
     if (redirectedRef.current || typeof window === 'undefined') return;
@@ -58,18 +64,18 @@ export const AuthCallbackPage: React.FC = () => {
     if (email) {
       setEmailParam(email);
     }
+    const token = getParam('token') ?? getParam('access_token');
+    if (token) {
+      setResetToken(token);
+    }
     const type = getParam('type');
-    const mode = getParam('mode');
+    const mode = getParam('mode') ?? (type === 'recovery' ? 'reset' : null);
     if (mode) {
       setModeParam(mode);
-    } else if (type === 'recovery') {
-      setModeParam('reset');
     }
-    const source = getParam('source');
+    const source = getParam('source') ?? (type === 'recovery' ? 'password' : null);
     if (source) {
       setSourceParam(source);
-    } else if (type === 'recovery') {
-      setSourceParam('password');
     }
     const target = searchParams.get('redirect_to') || hashParams.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
@@ -81,8 +87,23 @@ export const AuthCallbackPage: React.FC = () => {
       return;
     }
 
+    const schemeParams = new URLSearchParams();
+    schemeParams.set('source', source || 'confirmation');
+    if (mode) {
+      schemeParams.set('mode', mode);
+    }
+    if (email) {
+      schemeParams.set('email', email);
+    }
+    const immediateSchemeUrl = `verityprotect://auth/callback?${schemeParams.toString()}`;
+
     if (type === 'oauth') {
-      window.location.href = schemeUrl;
+      window.location.href = immediateSchemeUrl;
+      return;
+    }
+
+    const isRecoveryLink = mode === 'reset' && source === 'password';
+    if (isRecoveryLink) {
       return;
     }
 
@@ -116,8 +137,57 @@ export const AuthCallbackPage: React.FC = () => {
     window.location.href = schemeUrl;
   };
 
+  const handleResetSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!resetToken) {
+      setResetError(null);
+      return;
+    }
+    if (!newPassword) {
+      setResetError('Enter a new password before continuing.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setResetError('Passwords must match.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setResetError('Use a password with at least 8 characters.');
+      return;
+    }
+
+    setResetState('submitting');
+    setResetError(null);
+
+    try {
+      const response = await fetch('/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: resetToken,
+          new_password: newPassword,
+          email: emailParam ?? undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        const message =
+          payload?.message ?? payload?.error ?? payload?.detail ?? 'Unable to reset your password right now.';
+        throw new Error(message);
+      }
+
+      setResetState('success');
+    } catch (error) {
+      setResetState('idle');
+      setResetError(error instanceof Error ? error.message : 'Unable to reset your password right now.');
+    }
+  };
+
   useEffect(() => {
-    if (!manualHref || !isDesktop) {
+    if (isResetFlow || !manualHref || !isDesktop) {
       setQrDataUrl(null);
       return;
     }
@@ -137,16 +207,16 @@ export const AuthCallbackPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [manualHref, isDesktop]);
+  }, [manualHref, isDesktop, isResetFlow]);
 
   useEffect(() => {
-    if (stage !== 'success' || linkError || autoRedirected) return;
+    if (stage !== 'success' || linkError || autoRedirected || isResetFlow) return;
     const timer = window.setTimeout(() => {
       window.location.href = schemeUrl;
       setAutoRedirected(true);
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [stage, linkError, schemeUrl, autoRedirected]);
+  }, [stage, linkError, schemeUrl, autoRedirected, isResetFlow]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -181,118 +251,232 @@ export const AuthCallbackPage: React.FC = () => {
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-light-card dark:bg-dark-card/90 p-8 shadow-[0_30px_120px_rgba(3,6,15,0.6)] backdrop-blur-[24px] sm:px-10">
           <div className="absolute -left-16 top-4 h-48 w-48 rounded-full bg-brand-blue/10 blur-[80px]" />
           <div className="absolute right-[-20%] bottom-0 h-96 w-96 rounded-full bg-brand-blue/30 opacity-20 blur-[140px]" />
-          <div className="relative flex flex-col items-center gap-6 text-center text-light-text dark:text-light-text">
-            <div
-              className={`flex h-20 w-20 items-center justify-center rounded-[26px] border border-white/10 bg-brand-blue/10 ${
-                isSuccess ? '' : 'calm-scale'
-              }`}
-              data-testid="auth-squircle"
-            >
-              {isSuccess ? (
-                <ShieldCheck className="h-10 w-10 text-brand-blue" aria-hidden="true" />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                  <Loader2 className="h-6 w-6 text-brand-blue animate-spin" aria-hidden="true" />
+          {isResetFlow ? (
+            <div className="relative flex flex-col gap-6 text-left text-light-text dark:text-light-text sm:text-left">
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
+                  Reset password
+                </p>
+                <h2 className="text-4xl font-semibold text-light-text dark:text-white">Choose a new password</h2>
+                <p className="text-base text-light-muted dark:text-light-muted/90">
+                  {emailParam
+                    ? `We sent this link to ${emailParam}.`
+                    : 'Use the recovery link from your email to update your password.'}
+                </p>
+              </div>
+
+              <form onSubmit={handleResetSubmit} className="w-full space-y-4">
+                <div className="space-y-1 text-left">
+                  <label htmlFor="new-password" className="text-[11px] font-semibold uppercase tracking-[0.35em] text-dark-muted dark:text-light-muted">
+                    New password
+                  </label>
+                  <input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(event) => {
+                      setNewPassword(event.target.value);
+                      setResetError(null);
+                    }}
+                    autoComplete="new-password"
+                    minLength={8}
+                    disabled={resetState === 'success'}
+                    placeholder="Enter a new password"
+                    className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 text-base text-dark-text shadow-sm placeholder:text-light-muted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-light-text"
+                  />
+                </div>
+                <div className="space-y-1 text-left">
+                  <label htmlFor="confirm-password" className="text-[11px] font-semibold uppercase tracking-[0.35em] text-dark-muted dark:text-light-muted">
+                    Confirm password
+                  </label>
+                  <input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(event) => {
+                      setConfirmPassword(event.target.value);
+                      setResetError(null);
+                    }}
+                    autoComplete="new-password"
+                    minLength={8}
+                    disabled={resetState === 'success'}
+                    placeholder="Re-enter your password"
+                    className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 text-base text-dark-text shadow-sm placeholder:text-light-muted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-light-text"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  fullWidth
+                  disabled={resetState !== 'idle' || !resetToken}
+                  className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
+                >
+                  {resetState === 'submitting' ? 'Resetting password…' : 'Reset my password'}
+                </Button>
+              </form>
+
+              {resetError && (
+                <div
+                  className="rounded-2xl border border-red-200/60 bg-red-50/60 px-4 py-3 text-sm text-red-800 dark:border-red-500/60 dark:bg-red-900/50 dark:text-red-200"
+                  aria-live="polite"
+                >
+                  {resetError}
+                </div>
+              )}
+              {!resetToken && (
+                <div className="rounded-2xl border border-red-200/60 bg-red-50/60 px-4 py-3 text-sm text-red-800 dark:border-red-500/60 dark:bg-red-900/50 dark:text-red-200">
+                  <p className="font-semibold">Missing token</p>
+                  <p className="text-[13px] text-red-800/80 dark:text-red-200/80">
+                    The reset link has expired. Request a new email and try again.
+                  </p>
+                </div>
+              )}
+              {resetState === 'success' && (
+                <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50/60 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/60 dark:bg-emerald-900/30 dark:text-emerald-100">
+                  <p className="font-semibold">Success</p>
+                  <p className="text-[13px] text-emerald-700/80 dark:text-emerald-100/80">
+                    Your password was updated. Open the Verity Protect app to sign in with your new password or return to the landing page.
+                  </p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      fullWidth
+                      onClick={() => {
+                        window.location.href = '/';
+                      }}
+                      className="text-sm text-dark-text dark:text-light-text"
+                    >
+                      Back to the homepage
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <div className="text-center text-xs text-light-muted dark:text-light-muted/80">
+                <p className="font-semibold uppercase tracking-[0.4em] text-[10px] text-dark-text dark:text-light-muted">
+                  Need a fresh link?
+                </p>
+                <p className="mt-1">
+                  Request a new password reset email to get a fresh link and return here to continue.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="relative flex flex-col items-center gap-6 text-center text-light-text dark:text-light-text">
+              <div
+                className={`flex h-20 w-20 items-center justify-center rounded-[26px] border border-white/10 bg-brand-blue/10 ${
+                  isSuccess ? '' : 'calm-scale'
+                }`}
+                data-testid="auth-squircle"
+              >
+                {isSuccess ? (
+                  <ShieldCheck className="h-10 w-10 text-brand-blue" aria-hidden="true" />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                    <Loader2 className="h-6 w-6 text-brand-blue animate-spin" aria-hidden="true" />
+                  </div>
+                )}
+              </div>
+              <h2 className="text-4xl font-semibold text-light-text dark:text-white">{title}</h2>
+              <p className="text-base text-light-muted dark:text-light-muted">{description}</p>
+
+              <div className="space-y-4 w-full">
+                <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.3em]">
+                  <span className={`inline-flex h-2 w-2 rounded-full transition-colors duration-500 ${indicatorColor}`} />
+                  <span
+                    className={`whitespace-nowrap text-light-text dark:text-light-muted ${
+                      stage === 'failed' ? 'text-red-500' : ''
+                    }`}
+                  >
+                    {indicator}
+                  </span>
+                </div>
+                <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-light-border/60 dark:bg-white/10">
+                  <div
+                    className={`absolute inset-0 origin-left rounded-full transition-transform duration-[1500ms] ${isSuccess ? 'scale-x-100' : 'scale-x-0 calm-progress'}`}
+                    style={{
+                      background: stage === 'failed'
+                        ? 'linear-gradient(90deg, rgba(239,68,68,1), rgba(252,165,165,1))'
+                        : isSuccess
+                          ? 'linear-gradient(90deg, rgba(16,185,129,1), rgba(34,197,94,1))'
+                          : 'linear-gradient(90deg, rgba(59,130,246,1), rgba(191,219,254,1))',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <Button
+                size="lg"
+                onClick={handleManualRedirect}
+                disabled={stage === 'connecting'}
+                className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
+              >
+                {button}
+              </Button>
+
+              <p className="text-xs text-light-muted dark:text-light-muted/90">
+                If the app doesn’t open automatically, tap the button above.
+              </p>
+              {linkError && (
+                <div className="mt-4 rounded-2xl border border-red-200/60 bg-red-50/60 px-4 py-3 text-sm text-red-800 dark:border-red-500/60 dark:bg-red-900/50 dark:text-red-200">
+                  <p className="font-semibold">Link expired</p>
+                  <p className="text-[13px] text-red-800/80 dark:text-red-200/80">
+                    This confirmation link was already used. Please request a fresh email or open the app manually.
+                  </p>
+                </div>
+              )}
+              {isDesktop && (
+              <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/20 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
+                    Desktop? Scan this QR
+                  </p>
+                  <p className="text-[11px] text-dark-muted dark:text-light-muted/80">
+                    Use your phone camera to open the Verity Protect app.
+                  </p>
+                  <div className="mt-3 flex items-center justify-center">
+                    {qrDataUrl ? (
+                      <img src={qrDataUrl} alt="Scan to open Verity Protect" className="h-36 w-36 rounded-2xl border border-white/20 bg-white" />
+                    ) : qrError ? (
+                      <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-red-300/50 bg-red-50 text-xs text-red-600">
+                        QR unavailable
+                      </div>
+                    ) : (
+                      <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-xs text-light-muted">
+                        Generating QR…
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-4 flex flex-col gap-2 text-xs text-light-muted dark:text-light-muted/80">
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-dark-border/80 dark:border-white/40 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.4em] text-[#0f172a] dark:text-white transition hover:border-brand-blue hover:text-brand-blue dark:hover:text-brand-blue"
+                  >
+                  <ClipboardCopy className="h-4 w-4" />
+                  {copied === 'copied' ? 'Link copied' : 'Copy link'}
+                </button>
+                    {copied === 'failed' && (
+                      <span className="text-[10px] text-red-400">Unable to copy—please copy manually</span>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-            <h2 className="text-4xl font-semibold text-light-text dark:text-white">{title}</h2>
-            <p className="text-base text-light-muted dark:text-light-muted">{description}</p>
+          )}
 
-            <div className="space-y-4 w-full">
-              <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.3em]">
-                <span className={`inline-flex h-2 w-2 rounded-full transition-colors duration-500 ${indicatorColor}`} />
-                <span
-                  className={`whitespace-nowrap text-light-text dark:text-light-muted ${
-                    stage === 'failed' ? 'text-red-500' : ''
-                  }`}
-                >
-                  {indicator}
-                </span>
-              </div>
-              <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-light-border/60 dark:bg-white/10">
-                <div
-                  className={`absolute inset-0 origin-left rounded-full transition-transform duration-[1500ms] ${isSuccess ? 'scale-x-100' : 'scale-x-0 calm-progress'}`}
-                  style={{
-                    background: stage === 'failed'
-                      ? 'linear-gradient(90deg, rgba(239,68,68,1), rgba(252,165,165,1))'
-                      : isSuccess
-                        ? 'linear-gradient(90deg, rgba(16,185,129,1), rgba(34,197,94,1))'
-                        : 'linear-gradient(90deg, rgba(59,130,246,1), rgba(191,219,254,1))',
-                  }}
-                />
-              </div>
-            </div>
-
-            <Button
-              size="lg"
-              onClick={handleManualRedirect}
-              disabled={stage === 'connecting'}
-              className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
-            >
-              {button}
-            </Button>
-
-            <p className="text-xs text-light-muted dark:text-light-muted/90">
-              If the app doesn’t open automatically, tap the button above.
-            </p>
-            {linkError && (
-              <div className="mt-4 rounded-2xl border border-red-200/60 bg-red-50/60 px-4 py-3 text-sm text-red-800 dark:border-red-500/60 dark:bg-red-900/50 dark:text-red-200">
-                <p className="font-semibold">Link expired</p>
-                <p className="text-[13px] text-red-800/80 dark:text-red-200/80">
-                  This confirmation link was already used. Please request a fresh email or open the app manually.
-                </p>
-              </div>
-            )}
-            {isDesktop && (
-            <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/20 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
-                  Desktop? Scan this QR
-                </p>
-                <p className="text-[11px] text-dark-muted dark:text-light-muted/80">
-                  Use your phone camera to open the Verity Protect app.
-                </p>
-                <div className="mt-3 flex items-center justify-center">
-                  {qrDataUrl ? (
-                    <img src={qrDataUrl} alt="Scan to open Verity Protect" className="h-36 w-36 rounded-2xl border border-white/20 bg-white" />
-                  ) : qrError ? (
-                    <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-red-300/50 bg-red-50 text-xs text-red-600">
-                      QR unavailable
-                    </div>
-                  ) : (
-                    <div className="flex h-36 w-36 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-xs text-light-muted">
-                      Generating QR…
-                    </div>
-                  )}
+          {!isResetFlow && (
+            <div className="mt-12 border-t border-light-border dark:border-dark-border pt-6">
+              <div className="flex flex-col items-center gap-1 text-[11px] text-dark-muted dark:text-light-muted">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  <span className="font-semibold">Protected by Verity Cloud</span>
                 </div>
-                <div className="mt-4 flex flex-col gap-2 text-xs text-light-muted dark:text-light-muted/80">
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-dark-border/80 dark:border-white/40 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.4em] text-[#0f172a] dark:text-white transition hover:border-brand-blue hover:text-brand-blue dark:hover:text-brand-blue"
-                >
-                <ClipboardCopy className="h-4 w-4" />
-                {copied === 'copied' ? 'Link copied' : 'Copy link'}
-              </button>
-                  {copied === 'failed' && (
-                    <span className="text-[10px] text-red-400">Unable to copy—please copy manually</span>
-                  )}
+                <div className="text-[10px] uppercase tracking-[0.3em] text-dark-muted/70 dark:text-light-muted/70 text-center">
+                  Global Security Mesh Active
                 </div>
               </div>
-            )}
-          </div>
-
-          <div className="mt-12 border-t border-light-border dark:border-dark-border pt-6">
-            <div className="flex flex-col items-center gap-1 text-[11px] text-dark-muted dark:text-light-muted">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="font-semibold">Protected by Verity Cloud</span>
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-dark-muted/70 dark:text-light-muted/70 text-center">
-                Global Security Mesh Active
-              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

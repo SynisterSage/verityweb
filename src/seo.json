@@ -41,7 +41,7 @@
   },
   "/auth/callback": {
     "title": "Auth Callback | Verity Protect",
-    "description": "Portal page that forwards Supabase auth links to the native Verity Protect app.",
+    "description": "Handles Supabase auth links and password resets before handing users back to the native Verity Protect app.",
     "ogImage": "/og-image.png"
   }
 }
