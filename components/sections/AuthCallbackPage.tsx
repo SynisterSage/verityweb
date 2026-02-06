@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { ClipboardCopy, Loader2, ShieldCheck } from 'lucide-react';
+import { ClipboardCopy, Loader2, ShieldCheck, Eye, EyeOff, Check } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 const FALLBACK_REDIRECT = 'verityprotect://auth/callback';
@@ -50,7 +50,15 @@ export const AuthCallbackPage: React.FC = () => {
   const [resetError, setResetError] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const isResetFlow = modeParam === 'reset' && sourceParam === 'password';
+
+  const passwordRequirements = useMemo(() => [
+    { label: 'At least 8 characters', met: newPassword.length >= 8 },
+    { label: 'Contains a letter', met: /[a-zA-Z]/.test(newPassword) },
+    { label: 'Contains a special character', met: /[^a-zA-Z0-9]/.test(newPassword) },
+  ], [newPassword]);
 
   useEffect(() => {
     if (redirectedRef.current || typeof window === 'undefined') return;
@@ -272,39 +280,72 @@ export const AuthCallbackPage: React.FC = () => {
                   <label htmlFor="new-password" className="text-[11px] font-semibold uppercase tracking-[0.35em] text-dark-muted dark:text-light-muted">
                     New password
                   </label>
-                  <input
-                    id="new-password"
-                    type="password"
-                    value={newPassword}
-                    onChange={(event) => {
-                      setNewPassword(event.target.value);
-                      setResetError(null);
-                    }}
-                    autoComplete="new-password"
-                    minLength={8}
-                    disabled={resetState === 'success'}
-                    placeholder="Enter a new password"
-                    className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 text-base text-dark-text shadow-sm placeholder:text-light-muted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-light-text"
-                  />
+                  <div className="relative">
+                    <input
+                      id="new-password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={newPassword}
+                      onChange={(event) => {
+                        setNewPassword(event.target.value);
+                        setResetError(null);
+                      }}
+                      autoComplete="new-password"
+                      disabled={resetState === 'success'}
+                      placeholder="Enter a new password"
+                      className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 pr-12 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-white dark:placeholder:text-gray-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-light-muted hover:text-dark-text dark:text-light-muted dark:hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  
+                  {(newPassword.length > 0) && (
+                    <div className="pt-2 pl-1 space-y-1 transition-all duration-300">
+                      {passwordRequirements.map((req, index) => (
+                        <div key={index} className="flex items-center gap-2 text-[11px]">
+                          {req.met ? (
+                            <Check size={12} className="text-emerald-500" strokeWidth={3} />
+                          ) : (
+                            <div className="h-3 w-3 rounded-full border border-dark-muted/30 dark:border-light-muted/30" />
+                          )}
+                          <span className={req.met ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-dark-muted/70 dark:text-light-muted/70'}>
+                            {req.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1 text-left">
                   <label htmlFor="confirm-password" className="text-[11px] font-semibold uppercase tracking-[0.35em] text-dark-muted dark:text-light-muted">
                     Confirm password
                   </label>
-                  <input
-                    id="confirm-password"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(event) => {
-                      setConfirmPassword(event.target.value);
-                      setResetError(null);
-                    }}
-                    autoComplete="new-password"
-                    minLength={8}
-                    disabled={resetState === 'success'}
-                    placeholder="Re-enter your password"
-                    className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 text-base text-dark-text shadow-sm placeholder:text-light-muted focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-light-text"
-                  />
+                  <div className="relative">
+                    <input
+                      id="confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(event) => {
+                        setConfirmPassword(event.target.value);
+                        setResetError(null);
+                      }}
+                      autoComplete="new-password"
+                      disabled={resetState === 'success'}
+                      placeholder="Re-enter your password"
+                      className="w-full rounded-2xl border border-light-border bg-white/90 px-4 py-3 pr-12 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30 dark:border-dark-border dark:bg-dark-card/70 dark:text-white dark:placeholder:text-gray-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-light-muted hover:text-dark-text dark:text-light-muted dark:hover:text-white transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
                 <Button
                   type="submit"
@@ -314,7 +355,7 @@ export const AuthCallbackPage: React.FC = () => {
                   className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)] disabled:bg-brand-blue/60"
                 >
                   {resetState === 'submitting' ? 'Resetting password…' : 'Reset my password'}
-                </Button>
+                </Button> border-dark-border/10 dark:border-white/20
               </form>
 
               {resetError && (
@@ -354,8 +395,8 @@ export const AuthCallbackPage: React.FC = () => {
                   </div>
                 </div>
               )}
-              <div className="text-center text-xs text-light-muted dark:text-light-muted/80">
-                <p className="font-semibold uppercase tracking-[0.4em] text-[10px] text-dark-text dark:text-light-muted">
+              <div className="text-center text-xs text-slate-500 dark:text-light-muted/80">
+                <p className="font-semibold uppercase tracking-[0.4em] text-[10px] text-slate-900 dark:text-light-muted">
                   Need a fresh link?
                 </p>
                 <p className="mt-1">
