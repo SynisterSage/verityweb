@@ -16,6 +16,7 @@ import { initGA, pageview } from './src/analytics';
 import Page from './src/Page';
 import seo from './src/seo';
 import { AuthCallbackPage } from './components/sections/AuthCallbackPage';
+import { SupportCenter } from './components/sections/SupportCenter';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -84,6 +85,17 @@ function App() {
           <Route path="/waitlist" element={<Page title="Join the waitlist" description="Sign up to join the Verity Protect waitlist"><Home scrollTo="#waitlist" /></Page>} />
           <Route path="/privacy" element={<div className="animate-in fade-in duration-500"><PrivacyPolicy /></div>} />
           <Route path="/terms" element={<div className="animate-in fade-in duration-500"><TermsOfService /></div>} />
+          <Route
+            path="/support"
+            element={
+              <Page
+                title="Support Center | Verity Protect"
+                description="Browse system basics, privacy notes, FAQs, and billing answers in one clean space."
+              >
+                <SupportCenter />
+              </Page>
+            }
+          />
           <Route
             path="/auth/callback"
             element={

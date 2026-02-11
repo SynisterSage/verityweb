@@ -48,6 +48,18 @@ export const Footer: React.FC = () => {
     }, 60);
   };
 
+  const handleSupportClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/support');
+    setTimeout(() => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      } catch {}
+    }, 60);
+  };
+
   return (
     <footer className="bg-light-bg dark:bg-dark-bg border-t border-light-border dark:border-dark-border py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,6 +99,7 @@ export const Footer: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-sm text-light-muted dark:text-dark-muted">
               <button onClick={handlePrivacyClick} className="hover:text-light-text dark:hover:text-dark-text transition-colors">Privacy & Data</button>
               <button onClick={handleTermsClick} className="hover:text-light-text dark:hover:text-dark-text transition-colors">Terms</button>
+              <button onClick={handleSupportClick} className="hover:text-light-text dark:hover:text-dark-text transition-colors">Support Center</button>
               <a href="mailto:support@verityprotect.com" className="hover:text-light-text dark:hover:text-dark-text transition-colors">support@verityprotect.com</a>
             </div>
 

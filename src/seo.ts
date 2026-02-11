@@ -29,6 +29,11 @@ export const seo: Record<string, { title?: string; description?: string; ogImage
     description: 'Get early access and updates—join the Verity Protect waitlist.',
     ogImage: '/og-image.png',
   },
+  '/support': {
+    title: 'Support Center | Verity Protect',
+    description: 'Browse system basics, privacy notes, FAQs, and billing answers in one clean space.',
+    ogImage: '/og-image.png',
+  },
   '/privacy': {
     title: 'Privacy Policy | Verity Protect',
     description: 'How Verity Protect handles data, privacy, and security for families.',
