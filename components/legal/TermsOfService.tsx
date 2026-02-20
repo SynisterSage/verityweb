@@ -23,10 +23,10 @@ export const TermsOfService: React.FC = () => {
           Terms of Service
         </h1>
         <p className="text-sm text-light-muted dark:text-dark-muted mb-2">
-          <strong>Effective Date:</strong> February 6, 2026
+          <strong>Effective Date:</strong> February 20, 2026
         </p>
         <p className="text-sm text-light-muted dark:text-dark-muted mb-6">
-          <strong>Last Updated:</strong> February 6, 2026
+          <strong>Last Updated:</strong> February 20, 2026
         </p>
         <div className="prose prose-sm max-w-none text-light-muted dark:text-dark-muted">
           <p className="leading-relaxed">
