@@ -37,7 +37,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({ variant = 'warning' })
              </div>
              
              <div className="w-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-xl p-4 shadow-sm">
-                <p className="text-xs text-left mb-2 font-semibold text-light-muted dark:text-dark-muted uppercase tracking-wider">Verity AI Screening</p>
+                <p className="text-xs text-left mb-2 font-semibold text-light-muted dark:text-dark-muted uppercase tracking-wider">Verity Screening</p>
                 <p className="text-sm text-left italic opacity-80">"Hello, I'm calling from your bank regarding a compromised account..."</p>
              </div>
 

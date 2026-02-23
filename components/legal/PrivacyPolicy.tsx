@@ -148,7 +148,7 @@ export const PrivacyPolicy: React.FC = () => {
             <div>
               <h3 className="text-xl font-semibold text-light-text dark:text-dark-text mb-4">2.2 Fraud Detection and Research</h3>
               <p className="text-sm text-light-muted dark:text-dark-muted mb-4">
-                We analyze call patterns to improve fraud detection algorithms, train machine learning models using aggregated, anonymized data, research emerging scam tactics, and generate security insights.
+                We analyze call patterns to improve fraud detection models, use aggregated and anonymized data to tune detection accuracy, research emerging scam tactics, and generate security insights.
               </p>
               <p className="text-sm text-light-text dark:text-dark-text"><strong>Data Anonymization:</strong> Research and analytics use aggregated, de-identified data that cannot be traced back to individual users.</p>
             </div>

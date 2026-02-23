@@ -91,7 +91,7 @@ By using our Service, you consent to the data practices described in this policy
 ### 2.3 Fraud Detection and Research
 
 - Analyze call patterns to improve fraud detection algorithms
-- Train machine learning models using aggregated, anonymized data
+- Tune fraud detection accuracy using aggregated, anonymized data
 - Research emerging scam tactics and protection methods
 - Generate security insights and threat intelligence
 

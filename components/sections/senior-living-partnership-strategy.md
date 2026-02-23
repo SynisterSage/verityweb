@@ -98,7 +98,7 @@ The Problem:
 
 The Solution:
 • Partner with Verity Protect at zero cost
-• AI-powered scam call protection
+• Automated scam call protection
 • Families set up and manage
 • No burden on your staff
 
@@ -139,7 +139,7 @@ Verity Protect stops scams before they reach your loved one.
 
 How It Works:
 1. We answer all unknown calls first
-2. AI analyzes caller behavior in real-time
+2. Our fraud-detection engine analyzes caller behavior in real-time
 3. Obvious scams are blocked automatically
 4. Trusted contacts always go through
 5. You monitor everything from your phone
@@ -252,7 +252,7 @@ Hi [Name],
 I noticed [Facility Name] prioritizes resident safety. I wanted to share 
 a no-cost way to help protect residents from the growing phone scam epidemic.
 
-Verity Protect uses AI to intercept and block scam calls before they reach 
+Verity Protect uses an automated fraud-detection engine to intercept and block scam calls before they reach 
 your residents. The best part: families set it up and manage it - zero 
 operational burden on your staff.
 
@@ -341,7 +341,7 @@ Once they agree:
 ## Competitive Advantages
 
 ### vs. Traditional Scam Blockers
-- ✅ AI-powered, not just spam lists
+- ✅ Automated analysis, not just spam lists
 - ✅ Real-time voice analysis
 - ✅ Family monitoring dashboard
 - ✅ Designed specifically for seniors
@@ -355,7 +355,7 @@ Once they agree:
 ## Objection Handling
 
 **"Our residents already have call blocking"**
-→ "Traditional blockers miss 60% of scams. Our AI analyzes voice patterns in real-time, catching even new scam tactics."
+→ "Traditional blockers miss many scam patterns. Our fraud-detection engine analyzes voice patterns in real-time, including newer scam tactics."
 
 **"Residents won't adopt new technology"**
 → "Their phone works exactly the same. Adult children set it up remotely - residents notice nothing except fewer scam calls."

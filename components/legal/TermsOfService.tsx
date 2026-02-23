@@ -64,7 +64,7 @@ export const TermsOfService: React.FC = () => {
           
           <div className="text-sm text-light-muted dark:text-dark-muted space-y-4">
             <p>
-              Verity Protect provides an AI-powered call screening service designed to identify and filter potential fraud, spam, and unwanted calls. The Service includes:
+              Verity Protect provides an automated call screening service designed to identify and filter potential fraud, spam, and unwanted calls. The Service includes:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Call forwarding and screening for unknown callers</li>
@@ -125,7 +125,7 @@ export const TermsOfService: React.FC = () => {
               <li>Answer and screen calls from unknown numbers using automated systems</li>
               <li>Record and transcribe screened calls for fraud analysis</li>
               <li>Store call metadata, recordings, and transcripts as described in our Privacy Policy</li>
-              <li>Use AI and machine learning to analyze call content and detect fraud</li>
+              <li>Use automated fraud-detection models to analyze call content and detect fraud</li>
             </ul>
 
             <h3 className="text-lg font-semibold text-light-text dark:text-dark-text mt-6">3.2 Recording Consent and Legal Compliance</h3>
