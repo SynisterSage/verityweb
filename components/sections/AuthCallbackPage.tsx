@@ -490,10 +490,10 @@ export const AuthCallbackPage: React.FC = () => {
               )}
               {isDesktop && (
               <div className="mt-6 w-full rounded-2xl border border-light-border/40 bg-white/20 p-4 text-center shadow-lg shadow-black/20 dark:border-dark-border/40 dark:bg-dark-card/80">
-                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
+                  <p className="inline-flex rounded-md bg-brand-blue px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.28em] text-white shadow-[0_6px_20px_rgba(45,109,246,0.35)] dark:bg-brand-blue/90">
                     Desktop? Scan this QR
                   </p>
-                  <p className="text-[11px] text-dark-muted dark:text-light-muted/80">
+                  <p className="mt-2 text-[11px] text-dark-text/70 dark:text-light-muted/80">
                     Use your phone camera to open the Verity Protect app.
                   </p>
                   <div className="mt-3 flex items-center justify-center">
