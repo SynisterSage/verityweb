@@ -7,40 +7,61 @@ interface ExplainerVideoProps {
 
 export const ExplainerVideo: React.FC<ExplainerVideoProps> = ({
   videoSrc = '/explainer.mp4',
-  poster = '/thumbnail.jpg',
+  poster = '/thumbnail.webp',
 }) => {
+  const sectionRef = React.useRef<HTMLElement | null>(null);
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = React.useState(true);
+  const [shouldLoadVideo, setShouldLoadVideo] = React.useState(false);
+  const [isPlayableZone, setIsPlayableZone] = React.useState(false);
+
+  React.useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === 'undefined') {
+      setShouldLoadVideo(true);
+      setIsPlayableZone(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) {
+          setShouldLoadVideo(true);
+        }
+        setIsPlayableZone(entry.intersectionRatio >= 0.5);
+      },
+      {
+        threshold: [0, 0.5],
+        rootMargin: '300px 0px',
+      },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
+    if (!shouldLoadVideo || !isPlayableZone) {
+      videoElement.pause();
+      return;
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            videoElement.loop = true;
-            const playPromise = videoElement.play();
-            if (playPromise && typeof playPromise.then === 'function') {
-              playPromise.catch(() => {
-                // ignore autoplay errors
-              });
-            }
-          } else {
-            videoElement.pause();
-          }
-        });
-      },
-      { threshold: 0.5 },
-    );
+    videoElement.loop = true;
+    const playPromise = videoElement.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+      playPromise.catch(() => {
+        // ignore autoplay errors
+      });
+    }
 
-    observer.observe(videoElement);
     return () => {
-      observer.disconnect();
       videoElement.pause();
     };
-  }, []);
+  }, [isPlayableZone, shouldLoadVideo]);
 
   React.useEffect(() => {
     if (videoRef.current) {
@@ -48,25 +69,28 @@ export const ExplainerVideo: React.FC<ExplainerVideoProps> = ({
     }
   }, [isMuted]);
 
-  const toggleMute = () => {
+  const toggleMute = React.useCallback(() => {
     setIsMuted((prev) => {
       const next = !prev;
       const el = videoRef.current;
       if (el) {
         el.muted = next;
         if (!next) {
-          const playPromise = el.play();
-          if (playPromise && typeof playPromise.then === 'function') {
-            playPromise.catch(() => {});
+          if (shouldLoadVideo && isPlayableZone) {
+            const playPromise = el.play();
+            if (playPromise && typeof playPromise.then === 'function') {
+              playPromise.catch(() => {});
+            }
           }
         }
       }
       return next;
     });
-  };
+  }, [isPlayableZone, shouldLoadVideo]);
 
   return (
     <section
+      ref={sectionRef}
       id="explainer-video"
       className="relative py-24 lg:py-28 overflow-hidden bg-light-bg dark:bg-[#0a0f19]"
     >
@@ -106,12 +130,12 @@ export const ExplainerVideo: React.FC<ExplainerVideoProps> = ({
                 </button>
                 <video
                   ref={videoRef}
-                  src={videoSrc}
+                  src={shouldLoadVideo ? videoSrc : undefined}
                   poster={poster}
                   playsInline
                   muted
                   loop
-                  preload="auto"
+                  preload={shouldLoadVideo ? 'metadata' : 'none'}
                   className="w-full h-full object-cover"
                 />
               </div>

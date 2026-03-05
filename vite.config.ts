@@ -5,7 +5,7 @@ import sitemap from 'vite-plugin-sitemap';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
-    const dynamicRoutes = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist', '/privacy', '/terms'];
+    const dynamicRoutes = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist', '/support', '/privacy', '/terms'];
 
     return {
       server: {

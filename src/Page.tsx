@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import seo from './seo';
+import seo, { SITE_URL } from './seo';
 
 interface PageProps {
   title?: string;
@@ -10,7 +10,6 @@ interface PageProps {
 
 const Page: React.FC<PageProps> = ({ title, description, children }) => {
   const base = 'Verity Protect';
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const rawPath = typeof window !== 'undefined' ? window.location.pathname : '/';
   const pathname = rawPath.replace(/\/$/, '') || '/';
 
@@ -18,30 +17,32 @@ const Page: React.FC<PageProps> = ({ title, description, children }) => {
   const resolvedTitle = title || routeSeo.title || seo['/'].title || base;
   const finalTitle = resolvedTitle.includes('|') || resolvedTitle === base ? resolvedTitle : `${resolvedTitle} | ${base}`;
   const resolvedDescription = description || routeSeo.description || seo['/'].description || '';
-  const defaultOgBase = '/og-image.png';
-  const defaultOg2x = '/og-image@2x.png';
-  let ogImage = routeSeo.ogImage || seo['/'].ogImage || defaultOgBase;
-  try {
-    if (typeof window !== 'undefined' && (window as any).devicePixelRatio >= 2) {
-      if (ogImage.endsWith('.png')) {
-        ogImage = ogImage.replace(/\.png$/, '@2x.png');
-      } else {
-        ogImage = defaultOg2x;
-      }
-    }
-  } catch {}
+  const rawOgImage = routeSeo.ogImage || seo['/'].ogImage || '/og-image.png';
+  const ogImage = /^https?:\/\//i.test(rawOgImage)
+    ? rawOgImage
+    : `${SITE_URL}${rawOgImage.startsWith('/') ? '' : '/'}${rawOgImage}`;
   const canonicalPath = pathname === '/' ? '/' : pathname;
+  const canonicalUrl = `${SITE_URL}${canonicalPath}`;
+  const isIndexable = routeSeo.indexable !== false;
+  const robotsContent = isIndexable
+    ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
+    : 'noindex,nofollow,noarchive';
 
   return (
     <>
       <Helmet>
         <title>{finalTitle}</title>
         <meta name="description" content={resolvedDescription} />
+        <meta name="robots" content={robotsContent} />
+        <meta name="googlebot" content={robotsContent} />
 
         {/* Open Graph */}
         <meta property="og:title" content={finalTitle} />
         <meta property="og:description" content={resolvedDescription} />
         <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content={base} />
+        <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
 
         {/* Twitter */}
@@ -50,7 +51,7 @@ const Page: React.FC<PageProps> = ({ title, description, children }) => {
         <meta name="twitter:description" content={resolvedDescription} />
         <meta name="twitter:image" content={ogImage} />
 
-        <link rel="canonical" href={`${origin}${canonicalPath}`} />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
       <div className="animate-in fade-in duration-500">{children}</div>

@@ -77,21 +77,18 @@ function App() {
       <Navbar />
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/how-it-works" element={<Page title="How it works" description="How Verity screens calls and keeps your family safe"><Home scrollTo="#how-it-works" /></Page>} />
-          <Route path="/benefits" element={<Page title="Benefits" description="Why families trust Verity to protect their loved ones"><Home scrollTo="#benefits" /></Page>} />
-          <Route path="/faq" element={<Page title="FAQ" description="Frequently asked questions about Verity Protect"><Home scrollTo="#faq" /></Page>} />
-          <Route path="/agencies" element={<Page title="Agencies" description="Information for agencies and partners"><Home scrollTo="#agencies" /></Page>} />
-          <Route path="/waitlist" element={<Page title="Join the waitlist" description="Sign up to join the Verity Protect waitlist"><Home scrollTo="#waitlist" /></Page>} />
-          <Route path="/privacy" element={<div className="animate-in fade-in duration-500"><PrivacyPolicy /></div>} />
-          <Route path="/terms" element={<div className="animate-in fade-in duration-500"><TermsOfService /></div>} />
+          <Route path="/" element={<Page><Home /></Page>} />
+          <Route path="/how-it-works" element={<Page><Home scrollTo="#how-it-works" /></Page>} />
+          <Route path="/benefits" element={<Page><Home scrollTo="#benefits" /></Page>} />
+          <Route path="/faq" element={<Page><Home scrollTo="#faq" /></Page>} />
+          <Route path="/agencies" element={<Page><Home scrollTo="#agencies" /></Page>} />
+          <Route path="/waitlist" element={<Page><Home scrollTo="#waitlist" /></Page>} />
+          <Route path="/privacy" element={<Page><PrivacyPolicy /></Page>} />
+          <Route path="/terms" element={<Page><TermsOfService /></Page>} />
           <Route
             path="/support"
             element={
-              <Page
-                title="Support Center | Verity Protect"
-                description="Browse system basics, privacy notes, FAQs, and billing answers in one clean space."
-              >
+              <Page>
                 <SupportCenter />
               </Page>
             }
@@ -99,10 +96,7 @@ function App() {
           <Route
             path="/auth/callback"
             element={
-              <Page
-                title="Auth Callback"
-                description="Handles Supabase magic links and password resets before redirecting users to the Verity Protect app."
-              >
+              <Page>
                 <AuthCallbackPage />
               </Page>
             }

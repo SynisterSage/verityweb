@@ -18,11 +18,25 @@ export const Navbar: React.FC = () => {
   const isHome = landingPaths.includes(location.pathname);
 
   useEffect(() => {
+    let ticking = false;
+    let rafId: number | null = null;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (ticking) return;
+      ticking = true;
+      rafId = window.requestAnimationFrame(() => {
+        const next = window.scrollY > 10;
+        setIsScrolled((prev) => (prev === next ? prev : next));
+        ticking = false;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Lock body scroll when mobile menu is open and compensate for scrollbar

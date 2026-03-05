@@ -31,7 +31,13 @@ export const SetupForwarding: React.FC<SetupForwardingProps> = ({ isActive = fal
        <div className="flex items-center gap-4 w-full justify-between relative px-2">
           {/* User Phone */}
           <div className="flex flex-col items-center gap-3 relative z-10">
-             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors duration-500 shadow-md ${isForwarded ? 'bg-brand-blue/10 text-brand-blue ring-2 ring-brand-blue/20' : 'bg-white dark:bg-[#1a2332] text-gray-400 border border-gray-200 dark:border-[#202c3c]'}`}>
+             <div
+               className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-[background-color,color,border-color,box-shadow] duration-500 shadow-md ${
+                 isForwarded
+                   ? 'bg-brand-blue/10 text-brand-blue border-brand-blue/30 shadow-brand-blue/20'
+                   : 'bg-white dark:bg-[#1a2332] text-gray-400 border-gray-200 dark:border-[#202c3c]'
+               }`}
+             >
                 <Smartphone size={32} />
              </div>
              <span className="text-xs font-bold text-light-muted dark:text-dark-muted">Your Phone</span>
@@ -44,7 +50,13 @@ export const SetupForwarding: React.FC<SetupForwardingProps> = ({ isActive = fal
 
           {/* Verity Shield */}
           <div className="flex flex-col items-center gap-3 relative z-10">
-             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-md ${isForwarded ? 'bg-brand-blue text-white shadow-brand-blue/30 scale-105' : 'bg-white dark:bg-[#1a2332] text-gray-400 border border-gray-200 dark:border-[#202c3c]'}`}>
+             <div
+               className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-[background-color,color,border-color,box-shadow,transform] duration-500 shadow-md ${
+                 isForwarded
+                   ? 'bg-brand-blue text-white border-brand-blue/30 shadow-brand-blue/30 scale-105'
+                   : 'bg-white dark:bg-[#1a2332] text-gray-400 border-gray-200 dark:border-[#202c3c]'
+               }`}
+             >
                 <ShieldCheck size={32} />
              </div>
              <span className="text-xs font-bold text-light-muted dark:text-dark-muted">Verity #</span>

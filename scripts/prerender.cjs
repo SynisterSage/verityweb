@@ -30,25 +30,42 @@ function removeExistingTags(head) {
   return head
     .replace(/<title>[\s\S]*?<\/title>/i, '')
     .replace(/<meta[^>]+name=["']description["'][^>]*>/i, '')
+    .replace(/<meta[^>]+name=["']robots["'][^>]*>/i, '')
+    .replace(/<meta[^>]+name=["']googlebot["'][^>]*>/i, '')
     .replace(/<meta[^>]+property=["']og:[^"']+["'][^>]*>/gi, '')
     .replace(/<meta[^>]+name=["']twitter:[^"']+["'][^>]*>/gi, '')
     .replace(/<link[^>]+rel=["']canonical["'][^>]*>/i, '');
 }
 
-function buildMeta({ title, description, ogImage, canonical }) {
+function toAbsoluteUrl(url, baseUrl) {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+function buildMeta({ title, description, ogImage, canonical, indexable, baseUrl }) {
   const parts = [];
   if (title) parts.push(`<title>${title}</title>`);
   if (description) parts.push(`<meta name="description" content="${escapeHtml(description)}" />`);
+  const robots = indexable === false
+    ? 'noindex,nofollow,noarchive'
+    : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
+  parts.push(`<meta name="robots" content="${robots}" />`);
+  parts.push(`<meta name="googlebot" content="${robots}" />`);
 
+  const resolvedOgImage = toAbsoluteUrl(ogImage || '/og-image.png', baseUrl);
   if (title) parts.push(`<meta property="og:title" content="${escapeHtml(title)}" />`);
   if (description) parts.push(`<meta property="og:description" content="${escapeHtml(description)}" />`);
-  if (ogImage) parts.push(`<meta property="og:image" content="${ogImage}" />`);
+  if (resolvedOgImage) parts.push(`<meta property="og:image" content="${resolvedOgImage}" />`);
+  if (canonical) parts.push(`<meta property="og:url" content="${canonical}" />`);
+  parts.push(`<meta property="og:site_name" content="Verity Protect" />`);
+  parts.push(`<meta property="og:locale" content="en_US" />`);
   parts.push(`<meta property="og:type" content="website" />`);
 
   parts.push(`<meta name="twitter:card" content="summary_large_image" />`);
   if (title) parts.push(`<meta name="twitter:title" content="${escapeHtml(title)}" />`);
   if (description) parts.push(`<meta name="twitter:description" content="${escapeHtml(description)}" />`);
-  if (ogImage) parts.push(`<meta name="twitter:image" content="${ogImage}" />`);
+  if (resolvedOgImage) parts.push(`<meta name="twitter:image" content="${resolvedOgImage}" />`);
 
   if (canonical) parts.push(`<link rel="canonical" href="${canonical}" />`);
 
@@ -108,9 +125,45 @@ function main() {
     "name": "Verity Protect",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": `${baseUrl}/?s={search_term_string}`,
+      "target": `${baseUrl}/support?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
+  };
+
+  const softwareAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Verity Protect",
+    "applicationCategory": "CommunicationApplication",
+    "operatingSystem": "iOS",
+    "url": baseUrl,
+    "description": "Family-managed call screening that protects older adults from scam calls.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Monthly plan",
+        "price": "9.99",
+        "priceCurrency": "USD",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "9.99",
+          "priceCurrency": "USD",
+          "billingDuration": "P1M"
+        }
+      },
+      {
+        "@type": "Offer",
+        "name": "Annual plan",
+        "price": "99.99",
+        "priceCurrency": "USD",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "price": "99.99",
+          "priceCurrency": "USD",
+          "billingDuration": "P1Y"
+        }
+      }
+    ]
   };
 
   // FAQ items (copied from components/sections/FAQ.tsx) so we can prerender JSON-LD
@@ -141,7 +194,7 @@ function main() {
     },
     {
       question: "How much does this cost?",
-      answer: "We're in early access and will share pricing soon. Join the waitlist to get updates and early access offers."
+      answer: "Verity Protect is $9.99 per month or $99.99 per year, which is about 17% off monthly billing."
     }
   ];
 
@@ -159,9 +212,19 @@ function main() {
     const data = seo[route];
     const canonical = baseUrl + (route === '/' ? '/' : route);
     const title = data.title && data.title.includes('|') ? data.title : data.title;
-    const metaHtml = buildMeta({ title, description: data.description, ogImage: data.ogImage, canonical });
+    const metaHtml = buildMeta({
+      title,
+      description: data.description,
+      ogImage: data.ogImage,
+      canonical,
+      indexable: data.indexable,
+      baseUrl
+    });
     // Inject JSON-LD for Organization and WebSite into every prerendered page
     let jsonLdScripts = `\n    <script type="application/ld+json">${JSON.stringify(orgJsonLd)}</script>\n    <script type="application/ld+json">${JSON.stringify(websiteJsonLd)}</script>`;
+    if (route === '/') {
+      jsonLdScripts += `\n    <script type="application/ld+json">${JSON.stringify(softwareAppJsonLd)}</script>`;
+    }
     // For the FAQ route, also inject the FAQPage JSON-LD so Google sees it in the static HTML
     if (route === '/faq') {
       jsonLdScripts += `\n    <script type="application/ld+json">${JSON.stringify(faqJsonLd)}</script>`;

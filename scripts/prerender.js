@@ -31,27 +31,44 @@ function removeExistingTags(head) {
   return head
     .replace(/<title>[\s\S]*?<\/title>/i, '')
     .replace(/<meta[^>]+name=["']description["'][^>]*>/i, '')
+    .replace(/<meta[^>]+name=["']robots["'][^>]*>/i, '')
+    .replace(/<meta[^>]+name=["']googlebot["'][^>]*>/i, '')
     .replace(/<meta[^>]+property=["']og:[^"']+["'][^>]*>/gi, '')
     .replace(/<meta[^>]+name=["']twitter:[^"']+["'][^>]*>/gi, '')
     .replace(/<link[^>]+rel=["']canonical["'][^>]*>/i, '');
 }
 
-function buildMeta({ title, description, ogImage, canonical }) {
+function toAbsoluteUrl(url, baseUrl) {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+function buildMeta({ title, description, ogImage, canonical, indexable, baseUrl }) {
   const parts = [];
   if (title) parts.push(`<title>${title}</title>`);
   if (description) parts.push(`<meta name="description" content="${escapeHtml(description)}" />`);
+  const robots = indexable === false
+    ? 'noindex,nofollow,noarchive'
+    : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
+  parts.push(`<meta name="robots" content="${robots}" />`);
+  parts.push(`<meta name="googlebot" content="${robots}" />`);
 
   // Open Graph
+  const resolvedOgImage = toAbsoluteUrl(ogImage || '/og-image.png', baseUrl);
   if (title) parts.push(`<meta property="og:title" content="${escapeHtml(title)}" />`);
   if (description) parts.push(`<meta property="og:description" content="${escapeHtml(description)}" />`);
-  if (ogImage) parts.push(`<meta property="og:image" content="${ogImage}" />`);
+  if (resolvedOgImage) parts.push(`<meta property="og:image" content="${resolvedOgImage}" />`);
+  if (canonical) parts.push(`<meta property="og:url" content="${canonical}" />`);
+  parts.push(`<meta property="og:site_name" content="Verity Protect" />`);
+  parts.push(`<meta property="og:locale" content="en_US" />`);
   parts.push(`<meta property="og:type" content="website" />`);
 
   // Twitter
   parts.push(`<meta name="twitter:card" content="summary_large_image" />`);
   if (title) parts.push(`<meta name="twitter:title" content="${escapeHtml(title)}" />`);
   if (description) parts.push(`<meta name="twitter:description" content="${escapeHtml(description)}" />`);
-  if (ogImage) parts.push(`<meta name="twitter:image" content="${ogImage}" />`);
+  if (resolvedOgImage) parts.push(`<meta name="twitter:image" content="${resolvedOgImage}" />`);
 
   if (canonical) parts.push(`<link rel="canonical" href="${canonical}" />`);
 
@@ -93,13 +110,20 @@ function writeForRoute(template, route, metaHtml) {
 function main() {
   const seo = loadSeo();
   const template = readTemplate();
-  const baseUrl = 'https://verityprotect.com';
+  const baseUrl = 'https://www.verityprotect.com';
 
   Object.keys(seo).forEach((route) => {
     const data = seo[route];
     const canonical = baseUrl + (route === '/' ? '/' : route);
     const title = data.title && data.title.includes('|') ? data.title : data.title;
-    const metaHtml = buildMeta({ title, description: data.description, ogImage: data.ogImage, canonical });
+    const metaHtml = buildMeta({
+      title,
+      description: data.description,
+      ogImage: data.ogImage,
+      canonical,
+      indexable: data.indexable,
+      baseUrl
+    });
     writeForRoute(template, route, metaHtml);
   });
 }

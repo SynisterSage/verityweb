@@ -4,4 +4,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://verityprotect.com/sitemap.xml
+Sitemap: https://www.verityprotect.com/sitemap.xml

@@ -1,4 +1,4 @@
-export function faqJsonLd(questions: { question: string; answer: string }[], siteUrl = 'https://verityprotect.com') {
+export function faqJsonLd(questions: { question: string; answer: string }[], siteUrl = 'https://www.verityprotect.com') {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

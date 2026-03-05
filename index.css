@@ -7,6 +7,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Avoid iOS/Safari tap flash outlines on interactive controls */
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Custom scrollbar — light + dark variants */
 ::-webkit-scrollbar {
   width: 10px;
@@ -121,4 +130,21 @@ body:not(.dark)::-webkit-scrollbar-thumb,
   to {
     transform: scaleX(1);
   }
+}
+
+/* Hide native search clear affordances so only our custom clear button appears */
+input[type='search'].support-search-input::-webkit-search-decoration,
+input[type='search'].support-search-input::-webkit-search-cancel-button,
+input[type='search'].support-search-input::-webkit-search-results-button,
+input[type='search'].support-search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+input[type='search'].support-search-input::-ms-clear,
+input[type='search'].support-search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
 }

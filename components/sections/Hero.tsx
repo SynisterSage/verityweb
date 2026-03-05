@@ -2,7 +2,16 @@ import React from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { PhoneMockup } from '../visuals/PhoneMockup';
-import { ChevronRight, ArrowDown } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
+
+const HERO_MOCKUP_SCREENS = [
+  '/mockups/optimized/iPhone.webp',
+  '/mockups/optimized/iPhone-1.webp',
+  '/mockups/optimized/iPhone-2.webp',
+  '/mockups/optimized/iPhone-3.webp',
+  '/mockups/optimized/iPhone-4.webp',
+  '/mockups/optimized/iPhone-5.webp'
+];
 
 export const Hero: React.FC = () => {
   const scrollTo = (id: string) => {
@@ -16,7 +25,7 @@ export const Hero: React.FC = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-blue/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center lg:items-start">
           
           {/* Text Content */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
@@ -49,12 +58,17 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* Visual Content */}
-          <div className="relative animate-in zoom-in-95 fade-in duration-1000 delay-200">
+          <div className="relative isolate z-0 animate-in zoom-in-95 fade-in duration-1000 delay-200 lg:pt-2">
             {/* Decorative circles behind phone */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] border border-brand-blue/20 rounded-full"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] border border-brand-blue/10 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] border border-brand-blue/20 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-brand-blue/10 rounded-full"></div>
             
-            <PhoneMockup variant="success" />
+            <PhoneMockup
+              screens={HERO_MOCKUP_SCREENS}
+              autoPlayMs={2600}
+              visibleLayers={3}
+              observeSectionOnSmallScreens
+            />
           </div>
 
         </div>

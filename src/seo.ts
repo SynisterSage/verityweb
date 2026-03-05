@@ -1,53 +1,87 @@
-export const seo: Record<string, { title?: string; description?: string; ogImage?: string }> = {
+export const SITE_URL = 'https://www.verityprotect.com';
+
+export interface SeoEntry {
+  title: string;
+  description: string;
+  ogImage: string;
+  indexable?: boolean;
+  includeInSitemap?: boolean;
+  changefreq?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  priority?: number;
+}
+
+export const seo: Record<string, SeoEntry> = {
   '/': {
-    title: 'Verity Protect | Secure Call Screening for Families',
-    description: 'Protect your loved ones from phone scams with trusted contact screening and family oversight.',
+    title: 'Verity Protect | Scam Call Screening for Seniors and Families',
+    description:
+      'Block scam calls, screen unknown numbers, and protect older adults with family-managed trusted contacts and voicemail review.',
     ogImage: '/og-image.png',
+    changefreq: 'weekly',
+    priority: 1.0,
   },
   '/how-it-works': {
-    title: 'How It Works | Verity Protect',
-    description: 'Learn how Verity screens unknown callers, uses Family PINs, and lets families review voicemails.',
+    title: 'How Verity Protect Works | Family Call Screening',
+    description: 'See how trusted contacts, Family PIN checks, and voicemail review work together to stop scam calls.',
     ogImage: '/og-image.png',
+    changefreq: 'weekly',
+    priority: 0.8,
   },
   '/benefits': {
-    title: 'Benefits | Verity Protect',
-    description: "Why families trust Verity: fewer unwanted calls, trusted contact management, and peace of mind.",
+    title: 'Benefits | Reduce Scam Calls for Loved Ones',
+    description: 'Give your family fewer spam interruptions, more trusted call connections, and better oversight.',
     ogImage: '/og-image.png',
+    changefreq: 'weekly',
+    priority: 0.8,
   },
   '/faq': {
-    title: 'FAQ | Verity Protect',
-    description: 'Answers to common questions about Verity Protect features, setup, and pricing.',
+    title: 'FAQ | Verity Protect Pricing, Setup, and Features',
+    description: 'Get quick answers about Verity Protect setup, trusted contacts, Family PIN, and monthly or annual pricing.',
     ogImage: '/og-image.png',
+    changefreq: 'weekly',
+    priority: 0.7,
   },
   '/agencies': {
-    title: 'Facility Partnerships | Verity Protect',
-    description: "Partner with Verity Protect to protect your residents from phone scams. Zero setup, no ongoing costs for your facility.",
+    title: 'Senior Living Partnerships | Verity Protect',
+    description:
+      'Offer residents scam-call protection with zero facility cost, minimal staff setup, and family-led onboarding.',
     ogImage: '/og-image.png',
+    changefreq: 'monthly',
+    priority: 0.75,
   },
   '/waitlist': {
     title: 'Join the Waitlist | Verity Protect',
-    description: 'Get early access and updates—join the Verity Protect waitlist.',
+    description: 'Get early access to Verity Protect and updates on launch timing, pricing, and onboarding.',
     ogImage: '/og-image.png',
+    changefreq: 'monthly',
+    priority: 0.65,
   },
   '/support': {
     title: 'Support Center | Verity Protect',
-    description: 'Browse system basics, privacy notes, FAQs, and billing answers in one clean space.',
+    description: 'Search support articles for setup, billing, privacy, troubleshooting, and account help.',
     ogImage: '/og-image.png',
+    changefreq: 'monthly',
+    priority: 0.65,
   },
   '/privacy': {
     title: 'Privacy Policy | Verity Protect',
-    description: 'How Verity Protect handles data, privacy, and security for families.',
+    description: 'Review how Verity Protect collects, uses, and secures personal data.',
     ogImage: '/og-image.png',
+    changefreq: 'yearly',
+    priority: 0.4,
   },
   '/terms': {
     title: 'Terms of Service | Verity Protect',
-    description: "Verity Protect's terms of use and legal information.",
+    description: 'Read Verity Protect terms, legal notices, account rules, and service conditions.',
     ogImage: '/og-image.png',
+    changefreq: 'yearly',
+    priority: 0.4,
   },
   '/auth/callback': {
     title: 'Auth Callback | Verity Protect',
-    description: 'Portal page that forwards Supabase auth links to the native Verity Protect app.',
+    description: 'Internal authentication redirect for Verity Protect account sign-in and password reset links.',
     ogImage: '/og-image.png',
+    indexable: false,
+    includeInSitemap: false,
   },
 };
 
