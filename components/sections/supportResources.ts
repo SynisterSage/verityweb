@@ -1,8 +1,15 @@
+export type ResourceReference = {
+  label: string;
+  url: string;
+  prefix?: string;
+};
+
 export type ResourceSection = {
   id: string;
   title: string;
   body: string;
   bullets?: string[];
+  references?: ResourceReference[];
 };
 
 export type SupportResourceType = 'system-basics' | 'privacy' | 'faq' | 'billing' | 'app-store';
@@ -275,12 +282,30 @@ export const APP_STORE_CONTENT: ResourceSection[] = [
     id: 'apple-ios-age-suitability',
     title: 'Apple iOS age suitability (12+)',
     body:
-      'Verity Protect is designed for users age 12 and up on iOS. The app focuses on scam-call protection, family visibility, and account safety controls rather than social networking or open user-generated content.',
+      'Verity Protect is designed for users age 12 and up on iOS. The product focuses on scam-call protection, family visibility, and account safety controls rather than social networking or open user-generated content.',
     bullets: [
       'Recommended age: 12+. Younger users should use the app only with a parent, guardian, or caretaker.',
       'Core experience: call screening, trusted contacts, alerts, and support workflows.',
       'No gambling, adult content, or open social posting inside the app.',
       'Calls from unknown numbers may include unpredictable language before they are screened, which is why family oversight and safety settings are built in.',
+    ],
+  },
+  {
+    id: 'accessibility',
+    title: 'Accessibility approach',
+    body:
+      'Verity Protect follows an adult-first, caregiver-friendly accessibility approach built for clarity during high-stress call moments. The interface supports both dark and light appearance modes, with deliberate attention to readable typography, predictable interaction patterns, and sufficient color contrast across key workflows.',
+    bullets: [
+      'The UI direction is led by designer Lex Ferguson, a design major at Monmouth University in West Long Branch, with a strong focus on practical, accessible product design.',
+      'Current accessibility priorities include clear hierarchy, consistent interaction models, and contrast-conscious styling for everyday readability.',
+      'Accessibility support is actively expanding, with additional Apple platform accessibility capabilities planned in upcoming releases.',
+    ],
+    references: [
+      {
+        prefix: 'Designer portfolio',
+        label: 'Lex Ferguson',
+        url: 'https://www.aferguson.art/',
+      },
     ],
   },
 ];

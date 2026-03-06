@@ -58,8 +58,8 @@ const groups: SupportGroup[] = [
   },
   {
     type: 'app-store',
-    title: 'Apple App Store',
-    description: 'iOS age suitability details and 12+ policy notes for App Review.',
+    title: 'Apple platform policies',
+    description: 'iOS age suitability details, accessibility approach, and platform policy guidance.',
     sections: APP_STORE_CONTENT,
   },
 ];
@@ -201,7 +201,10 @@ export const SupportCenter: React.FC = () => {
       groups.flatMap((group) =>
         group.sections.map((section) => {
           const bodyContent = [section.body, ...(section.bullets ?? [])].join(' ');
-          const searchSource = `${section.id} ${section.title} ${bodyContent} ${group.title} ${group.description}`;
+          const referenceContent = (section.references ?? [])
+            .map((reference) => `${reference.prefix ?? ''} ${reference.label} ${reference.url}`)
+            .join(' ');
+          const searchSource = `${section.id} ${section.title} ${bodyContent} ${referenceContent} ${group.title} ${group.description}`;
           const normalizedSearchText = normalizeText(searchSource);
           const searchWords = Array.from(
             new Set(normalizedSearchText.split(' ').filter((word) => word.length > 1))
@@ -674,6 +677,22 @@ export const SupportCenter: React.FC = () => {
                           <p className="text-base text-light-muted dark:text-dark-muted leading-relaxed">
                             {section.body}
                           </p>
+                          {section.references?.length ? (
+                            <div className="flex flex-wrap gap-3">
+                              {section.references.map((reference) => (
+                                <a
+                                  key={`${section.id}-${reference.url}-${reference.label}`}
+                                  href={reference.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue hover:underline"
+                                >
+                                  {reference.prefix ? `${reference.prefix}: ` : ''}
+                                  {reference.label}
+                                </a>
+                              ))}
+                            </div>
+                          ) : null}
                           {section.bullets ? (
                             <ul className="space-y-2 text-sm text-light-text dark:text-dark-text list-disc list-inside marker:text-brand-blue dark:marker:text-brand-blue marker:font-semibold">
                               {section.bullets.map((bullet) => (

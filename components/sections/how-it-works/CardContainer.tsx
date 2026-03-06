@@ -85,10 +85,10 @@ export const CardContainer: React.FC<CardContainerProps> = ({ title, description
 
         {/* Description Area */}
         <div className="p-8 bg-light-card dark:bg-dark-card flex-1 transition-colors duration-300 relative">
-          <div className="absolute -top-6 left-8 bg-brand-blue text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg border-4 border-light-card dark:border-dark-card">
+          <div className="inline-flex self-start mb-4 md:mb-0 md:absolute md:-top-6 md:left-8 bg-brand-blue text-white w-10 h-10 rounded-xl items-center justify-center font-bold text-lg shadow-lg border-4 border-light-card dark:border-dark-card">
               {stepNumber}
           </div>
-          <h3 className="text-xl font-bold text-light-text dark:text-dark-text mb-3 mt-2">{title}</h3>
+          <h3 className="text-xl font-bold text-light-text dark:text-dark-text mb-3 mt-0 md:mt-2">{title}</h3>
           <p className="text-light-muted dark:text-dark-muted leading-relaxed text-sm">
             {description}
           </p>
