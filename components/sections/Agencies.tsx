@@ -1,32 +1,18 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { ArrowRight, Building2, CheckCircle2, Heart, Shield, Sparkles } from 'lucide-react';
 
 export const Agencies: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handlePartnershipClick = () => {
-    // If already on home page, navigate to same page with role param to trigger update
-    if (location.pathname === '/') {
-      navigate('/?role=facility', { replace: true });
-      setTimeout(() => {
-        const waitlistSection = document.getElementById('waitlist');
-        if (waitlistSection) {
-          waitlistSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 50);
-    } else {
-      // Navigate to home with waitlist section and role
-      navigate('/?role=facility');
-      setTimeout(() => {
-        const waitlistSection = document.getElementById('waitlist');
-        if (waitlistSection) {
-          waitlistSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
+    navigate('/facilities-contact');
+    setTimeout(() => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      } catch {}
+    }, 60);
   };
 
   return (

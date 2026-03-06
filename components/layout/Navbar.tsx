@@ -3,6 +3,7 @@ import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Logo } from '../visuals/Logo';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { openAppStore } from '../../src/appStore';
 
 interface NavbarProps {
 }
@@ -14,7 +15,7 @@ export const Navbar: React.FC = () => {
   const [paddingRight, setPaddingRight] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
-  const landingPaths = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist'];
+  const landingPaths = ['/', '/how-it-works', '/benefits', '/faq', '/agencies'];
   const isHome = landingPaths.includes(location.pathname);
 
   useEffect(() => {
@@ -168,6 +169,11 @@ export const Navbar: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleAppStoreClick = () => {
+    setMobileMenuOpen(false);
+    openAppStore();
+  };
+
   // We restrict transition properties to avoid animating padding-right which causes visual jumps when scrollbar disappears
   // Keep mobile vertical padding stable when the mobile menu opens to prevent header shift.
   const compactVisual = isScrolled || mobileMenuOpen;
@@ -222,8 +228,8 @@ export const Navbar: React.FC = () => {
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </button>
               {isHome ? (
-                <Button size="sm" onClick={() => handleNavClick('/waitlist')}>
-                  Join Waitlist
+                <Button size="sm" onClick={handleAppStoreClick}>
+                  Download on the App Store
                 </Button>
               ) : (
                 <Button size="sm" variant="outline" onClick={goHome}>
@@ -275,8 +281,8 @@ export const Navbar: React.FC = () => {
                 </a>
               ))}
               <div className="pt-6 mt-6 border-t border-light-border dark:border-dark-border">
-                <Button fullWidth size="lg" onClick={() => handleNavClick('/waitlist')}>
-                  Join Waitlist
+                <Button fullWidth size="lg" onClick={handleAppStoreClick}>
+                  Download on the App Store
                 </Button>
               </div>
             </div>

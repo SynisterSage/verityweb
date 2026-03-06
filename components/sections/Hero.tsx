@@ -3,6 +3,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { PhoneMockup } from '../visuals/PhoneMockup';
 import { ArrowDown } from 'lucide-react';
+import { openAppStore } from '../../src/appStore';
 
 const HERO_MOCKUP_SCREENS = [
   '/mockups/optimized/iPhone.webp',
@@ -42,8 +43,8 @@ export const Hero: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-              <Button size="lg" onClick={() => scrollTo('#waitlist')}>
-                Join Waitlist
+              <Button size="lg" onClick={openAppStore}>
+                Download on the App Store
               </Button>
               <Button size="lg" variant="outline" onClick={() => scrollTo('#how-it-works')}>
                 How it works

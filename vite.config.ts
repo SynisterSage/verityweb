@@ -5,7 +5,48 @@ import sitemap from 'vite-plugin-sitemap';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
-    const dynamicRoutes = ['/', '/how-it-works', '/benefits', '/faq', '/agencies', '/waitlist', '/support', '/privacy', '/terms'];
+    const supportSectionRoutes = [
+      'overview',
+      'twilio-call-flow',
+      'calls-interactions',
+      'circles',
+      'automation-rules',
+      'safe-phrases',
+      'blocked-callers',
+      'pin-security',
+      'notifications',
+      'support-tickets',
+      'export-delete',
+      'privacy-vision',
+      'privacy-data',
+      'privacy-use',
+      'privacy-retention',
+      'privacy-rights',
+      'privacy-compliance',
+      'privacy-partners',
+      'faq-response-time',
+      'faq-automation',
+      'faq-tickets',
+      'faq-account',
+      'faq-app-store',
+      'billing-overview',
+      'billing-support',
+      'apple-ios-age-suitability',
+      'accessibility',
+    ].map((sectionId) => `/support/${sectionId}`);
+
+    const dynamicRoutes = [
+      '/',
+      '/how-it-works',
+      '/benefits',
+      '/faq',
+      '/agencies',
+      '/facilities-contact',
+      '/support',
+      ...supportSectionRoutes,
+      '/privacy',
+      '/terms',
+    ];
 
     return {
       server: {

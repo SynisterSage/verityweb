@@ -34,12 +34,12 @@
     "changefreq": "monthly",
     "priority": 0.75
   },
-  "/waitlist": {
-    "title": "Join the Waitlist | Verity Protect",
-    "description": "Get early access to Verity Protect and updates on launch timing, pricing, and onboarding.",
+  "/facilities-contact": {
+    "title": "Facility Partnerships Contact | Verity Protect",
+    "description": "Private contact form for senior living facilities interested in Verity Protect partnerships.",
     "ogImage": "/og-image.png",
     "changefreq": "monthly",
-    "priority": 0.65
+    "priority": 0.6
   },
   "/support": {
     "title": "Support Center | Verity Protect",
@@ -47,6 +47,195 @@
     "ogImage": "/og-image.png",
     "changefreq": "monthly",
     "priority": 0.65
+  },
+  "/support/overview": {
+    "title": "How Verity Protect keeps you safe | Verity Protect Support",
+    "description": "Read support guidance on \"How Verity Protect keeps you safe\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/twilio-call-flow": {
+    "title": "Twilio number & paired device | Verity Protect Support",
+    "description": "Read support guidance on \"Twilio number & paired device\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/calls-interactions": {
+    "title": "Actions on the calls and alerts screens | Verity Protect Support",
+    "description": "Read support guidance on \"Actions on the calls and alerts screens\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/circles": {
+    "title": "Circle members & roles | Verity Protect Support",
+    "description": "Read support guidance on \"Circle members & roles\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/automation-rules": {
+    "title": "Automation rules and scam detection | Verity Protect Support",
+    "description": "Read support guidance on \"Automation rules and scam detection\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/safe-phrases": {
+    "title": "Safe phrases and trusted contacts | Verity Protect Support",
+    "description": "Read support guidance on \"Safe phrases and trusted contacts\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/blocked-callers": {
+    "title": "Blocked numbers and screened callers | Verity Protect Support",
+    "description": "Read support guidance on \"Blocked numbers and screened callers\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/pin-security": {
+    "title": "PINs, passcodes, and security support | Verity Protect Support",
+    "description": "Read support guidance on \"PINs, passcodes, and security support\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/notifications": {
+    "title": "Notifications & alerts | Verity Protect Support",
+    "description": "Read support guidance on \"Notifications & alerts\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/support-tickets": {
+    "title": "Support tickets & feedback | Verity Protect Support",
+    "description": "Read support guidance on \"Support tickets & feedback\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/export-delete": {
+    "title": "Exporting and deleting accounts | Verity Protect Support",
+    "description": "Read support guidance on \"Exporting and deleting accounts\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-vision": {
+    "title": "We keep your circle secure | Verity Protect Support",
+    "description": "Read support guidance on \"We keep your circle secure\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-data": {
+    "title": "What we collect | Verity Protect Support",
+    "description": "Read support guidance on \"What we collect\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-use": {
+    "title": "How we use it | Verity Protect Support",
+    "description": "Read support guidance on \"How we use it\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-retention": {
+    "title": "Data retention | Verity Protect Support",
+    "description": "Read support guidance on \"Data retention\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-rights": {
+    "title": "Account controls | Verity Protect Support",
+    "description": "Read support guidance on \"Account controls\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-compliance": {
+    "title": "Legal safeguards & compliance | Verity Protect Support",
+    "description": "Read support guidance on \"Legal safeguards & compliance\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/privacy-partners": {
+    "title": "Third-party partners | Verity Protect Support",
+    "description": "Read support guidance on \"Third-party partners\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/faq-response-time": {
+    "title": "When will I hear back? | Verity Protect Support",
+    "description": "Read support guidance on \"When will I hear back?\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/faq-automation": {
+    "title": "Why did automation flag this call? | Verity Protect Support",
+    "description": "Read support guidance on \"Why did automation flag this call?\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/faq-tickets": {
+    "title": "How does the ticket timeline work? | Verity Protect Support",
+    "description": "Read support guidance on \"How does the ticket timeline work?\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/faq-account": {
+    "title": "Can I export or delete my data? | Verity Protect Support",
+    "description": "Read support guidance on \"Can I export or delete my data?\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/faq-app-store": {
+    "title": "How do I manage charges? | Verity Protect Support",
+    "description": "Read support guidance on \"How do I manage charges?\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/billing-overview": {
+    "title": "App Store or Play Store billing | Verity Protect Support",
+    "description": "Read support guidance on \"App Store or Play Store billing\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/billing-support": {
+    "title": "How support helps | Verity Protect Support",
+    "description": "Read support guidance on \"How support helps\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/apple-ios-age-suitability": {
+    "title": "Apple iOS age suitability (12+) | Verity Protect Support",
+    "description": "Read support guidance on \"Apple iOS age suitability (12+)\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
+  },
+  "/support/accessibility": {
+    "title": "Accessibility approach | Verity Protect Support",
+    "description": "Read support guidance on \"Accessibility approach\" in the Verity Protect support center.",
+    "ogImage": "/og-image.png",
+    "changefreq": "monthly",
+    "priority": 0.55
   },
   "/privacy": {
     "title": "Privacy Policy | Verity Protect",

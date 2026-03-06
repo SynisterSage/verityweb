@@ -10,6 +10,49 @@ export interface SeoEntry {
   priority?: number;
 }
 
+const SUPPORT_SECTION_TITLES: Record<string, string> = {
+  overview: 'How Verity Protect keeps you safe',
+  'twilio-call-flow': 'Twilio number & paired device',
+  'calls-interactions': 'Actions on the calls and alerts screens',
+  circles: 'Circle members & roles',
+  'automation-rules': 'Automation rules and scam detection',
+  'safe-phrases': 'Safe phrases and trusted contacts',
+  'blocked-callers': 'Blocked numbers and screened callers',
+  'pin-security': 'PINs, passcodes, and security support',
+  notifications: 'Notifications & alerts',
+  'support-tickets': 'Support tickets & feedback',
+  'export-delete': 'Exporting and deleting accounts',
+  'privacy-vision': 'We keep your circle secure',
+  'privacy-data': 'What we collect',
+  'privacy-use': 'How we use it',
+  'privacy-retention': 'Data retention',
+  'privacy-rights': 'Account controls',
+  'privacy-compliance': 'Legal safeguards & compliance',
+  'privacy-partners': 'Third-party partners',
+  'faq-response-time': 'When will I hear back?',
+  'faq-automation': 'Why did automation flag this call?',
+  'faq-tickets': 'How does the ticket timeline work?',
+  'faq-account': 'Can I export or delete my data?',
+  'faq-app-store': 'How do I manage charges?',
+  'billing-overview': 'App Store or Play Store billing',
+  'billing-support': 'How support helps',
+  'apple-ios-age-suitability': 'Apple iOS age suitability (12+)',
+  accessibility: 'Accessibility approach',
+};
+
+const SUPPORT_SECTION_SEO = Object.fromEntries(
+  Object.entries(SUPPORT_SECTION_TITLES).map(([sectionId, sectionTitle]) => [
+    `/support/${sectionId}`,
+    {
+      title: `${sectionTitle} | Verity Protect Support`,
+      description: `Read support guidance on "${sectionTitle}" in the Verity Protect support center.`,
+      ogImage: '/og-image.png',
+      changefreq: 'monthly',
+      priority: 0.55,
+    } as SeoEntry,
+  ])
+) as Record<string, SeoEntry>;
+
 export const seo: Record<string, SeoEntry> = {
   '/': {
     title: 'Verity Protect | Scam Call Screening for Seniors and Families',
@@ -48,12 +91,12 @@ export const seo: Record<string, SeoEntry> = {
     changefreq: 'monthly',
     priority: 0.75,
   },
-  '/waitlist': {
-    title: 'Join the Waitlist | Verity Protect',
-    description: 'Get early access to Verity Protect and updates on launch timing, pricing, and onboarding.',
+  '/facilities-contact': {
+    title: 'Facility Partnerships Contact | Verity Protect',
+    description: 'Private contact form for senior living facilities interested in Verity Protect partnerships.',
     ogImage: '/og-image.png',
     changefreq: 'monthly',
-    priority: 0.65,
+    priority: 0.6,
   },
   '/support': {
     title: 'Support Center | Verity Protect',
@@ -62,6 +105,7 @@ export const seo: Record<string, SeoEntry> = {
     changefreq: 'monthly',
     priority: 0.65,
   },
+  ...SUPPORT_SECTION_SEO,
   '/privacy': {
     title: 'Privacy Policy | Verity Protect',
     description: 'Review how Verity Protect collects, uses, and secures personal data.',

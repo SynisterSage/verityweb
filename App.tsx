@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Benefits } from './components/sections/Benefits';
 import { Agencies } from './components/sections/Agencies';
 import { FAQ } from './components/sections/FAQ';
-import { Waitlist } from './components/sections/Waitlist';
 import { ExplainerVideo } from './components/sections/ExplainerVideo';
 import { Footer } from './components/layout/Footer';
 import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
@@ -17,6 +16,7 @@ import Page from './src/Page';
 import seo from './src/seo';
 import { AuthCallbackPage } from './components/sections/AuthCallbackPage';
 import { SupportCenter } from './components/sections/SupportCenter';
+import { FacilitiesContact } from './components/sections/FacilitiesContact';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -39,7 +39,6 @@ function Home({ scrollTo }: { scrollTo?: string }) {
       <Benefits />
       <FAQ />
       <Agencies />
-      <Waitlist />
     </div>
   );
 }
@@ -83,7 +82,15 @@ function App() {
           <Route path="/benefits" element={<Page><Home scrollTo="#benefits" /></Page>} />
           <Route path="/faq" element={<Page><Home scrollTo="#faq" /></Page>} />
           <Route path="/agencies" element={<Page><Home scrollTo="#agencies" /></Page>} />
-          <Route path="/waitlist" element={<Page><Home scrollTo="#waitlist" /></Page>} />
+          <Route
+            path="/facilities-contact"
+            element={
+              <Page>
+                <FacilitiesContact />
+              </Page>
+            }
+          />
+          <Route path="/waitlist" element={<Navigate to="/" replace />} />
           <Route path="/privacy" element={<Page><PrivacyPolicy /></Page>} />
           <Route path="/terms" element={<Page><TermsOfService /></Page>} />
           <Route
