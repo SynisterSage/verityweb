@@ -5,7 +5,7 @@ export type ResourceSection = {
   bullets?: string[];
 };
 
-export type SupportResourceType = 'system-basics' | 'privacy' | 'faq' | 'billing';
+export type SupportResourceType = 'system-basics' | 'privacy' | 'faq' | 'billing' | 'app-store';
 
 export const SYSTEM_BASICS_CONTENT: ResourceSection[] = [
   {
@@ -266,6 +266,21 @@ export const BILLING_CONTENT: ResourceSection[] = [
       'Start a ticket from the Support screen and mention which App Store account the purchase used.',
       'If you canceled a subscription, support can confirm it was marked resolved on our side once the store refunds.',
       'Question about shared profiles? Support can explain how the charge maps to the profile you care for.',
+    ],
+  },
+];
+
+export const APP_STORE_CONTENT: ResourceSection[] = [
+  {
+    id: 'apple-ios-age-suitability',
+    title: 'Apple iOS age suitability (12+)',
+    body:
+      'Verity Protect is designed for users age 12 and up on iOS. The app focuses on scam-call protection, family visibility, and account safety controls rather than social networking or open user-generated content.',
+    bullets: [
+      'Recommended age: 12+. Younger users should use the app only with a parent, guardian, or caretaker.',
+      'Core experience: call screening, trusted contacts, alerts, and support workflows.',
+      'No gambling, adult content, or open social posting inside the app.',
+      'Calls from unknown numbers may include unpredictable language before they are screened, which is why family oversight and safety settings are built in.',
     ],
   },
 ];

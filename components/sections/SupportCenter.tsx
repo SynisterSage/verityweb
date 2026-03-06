@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ResourceSection,
   SupportResourceType,
@@ -8,6 +8,7 @@ import {
   PRIVACY_CONTENT,
   FAQ_CONTENT,
   BILLING_CONTENT,
+  APP_STORE_CONTENT,
 } from './supportResources';
 
 type SupportGroup = {
@@ -54,6 +55,12 @@ const groups: SupportGroup[] = [
     title: 'Billing & subscriptions',
     description: 'Guidance for store billing, refunds, and how support helps.',
     sections: BILLING_CONTENT,
+  },
+  {
+    type: 'app-store',
+    title: 'Apple App Store',
+    description: 'iOS age suitability details and 12+ policy notes for App Review.',
+    sections: APP_STORE_CONTENT,
   },
 ];
 
@@ -179,6 +186,7 @@ const getMatchScore = (section: IndexedSection, normalizedQuery: string, queryTo
 export const SupportCenter: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { sectionSlug } = useParams<{ sectionSlug?: string }>();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
   const scrollOffset = 140;
@@ -261,6 +269,7 @@ export const SupportCenter: React.FC = () => {
     [visibleGroups]
   );
 
+  const allSectionIds = useMemo(() => indexedSections.map((section) => section.id), [indexedSections]);
   const sectionIds = useMemo(() => visibleSections.map((section) => section.id), [visibleSections]);
 
   const sectionTitleById = useMemo(() => {
@@ -296,11 +305,18 @@ export const SupportCenter: React.FC = () => {
       const search = params.toString();
       const nextSearch = search ? `?${search}` : '';
       const nextHash = hasActiveQuery ? '' : location.hash;
-      if (nextSearch === location.search && nextHash === location.hash) return;
+      const nextPathname = hasActiveQuery ? '/support' : location.pathname;
+      if (
+        nextSearch === location.search &&
+        nextHash === location.hash &&
+        nextPathname === location.pathname
+      ) {
+        return;
+      }
 
       navigate(
         {
-          pathname: location.pathname,
+          pathname: nextPathname,
           search: nextSearch,
           hash: nextHash,
         },
@@ -311,7 +327,7 @@ export const SupportCenter: React.FC = () => {
   );
 
   const scrollToSection = useCallback(
-    (id: string, behavior: ScrollBehavior = 'smooth', updateHash = true) => {
+    (id: string, behavior: ScrollBehavior = 'smooth', updateRoute = true) => {
       const target = document.getElementById(id);
       if (!target) return;
 
@@ -322,30 +338,54 @@ export const SupportCenter: React.FC = () => {
       });
       setActiveSection(id);
 
-      if (updateHash) {
+      if (updateRoute) {
         navigate(
           {
-            pathname: location.pathname,
+            pathname: `/support/${id}`,
             search: location.search,
-            hash: `#${id}`,
+            hash: '',
           },
           { replace: true }
         );
       }
     },
-    [location.pathname, location.search, navigate]
+    [location.search, navigate]
   );
 
   useEffect(() => {
     const hashId = location.hash.replace('#', '');
-    if (!hashId || !sectionIds.includes(hashId)) return;
+    if (!hashId || !allSectionIds.includes(hashId)) return;
 
     const timer = window.setTimeout(() => {
       scrollToSection(hashId, 'auto', false);
     }, 80);
 
     return () => window.clearTimeout(timer);
-  }, [location.hash, scrollToSection, sectionIds]);
+  }, [allSectionIds, location.hash, scrollToSection]);
+
+  useEffect(() => {
+    if (!sectionSlug) return;
+    if (allSectionIds.includes(sectionSlug)) return;
+
+    navigate(
+      {
+        pathname: '/support',
+        search: location.search,
+        hash: location.hash,
+      },
+      { replace: true }
+    );
+  }, [allSectionIds, location.hash, location.search, navigate, sectionSlug]);
+
+  useEffect(() => {
+    if (!sectionSlug || !allSectionIds.includes(sectionSlug)) return;
+
+    const timer = window.setTimeout(() => {
+      scrollToSection(sectionSlug, 'auto', false);
+    }, 80);
+
+    return () => window.clearTimeout(timer);
+  }, [allSectionIds, scrollToSection, sectionSlug]);
 
   useEffect(() => {
     if (!sectionIds.length) return;
@@ -443,7 +483,7 @@ export const SupportCenter: React.FC = () => {
             Your support center
           </h1>
           <p className="text-base sm:text-lg text-light-muted dark:text-dark-muted max-w-3xl">
-            Browse system basics, privacy notes, FAQs, and billing answers in one place.
+            Browse system basics, privacy notes, FAQs, billing answers, and iOS age-suitability guidance in one place.
           </p>
         </div>
 
@@ -465,7 +505,7 @@ export const SupportCenter: React.FC = () => {
               type="search"
               value={query}
               onChange={handleSearchChange}
-              placeholder="Try: billing refund, trusted contacts, family pin"
+              placeholder="Try: billing refund, trusted contacts, iOS 12+"
               className="support-search-input w-full rounded-xl border border-light-border dark:border-dark-border bg-transparent pl-10 pr-11 py-3 text-sm sm:text-base text-light-text dark:text-dark-text placeholder:text-light-muted dark:placeholder:text-dark-muted focus:outline-none focus:ring-2 focus:ring-brand-blue/40 appearance-none"
             />
             {query ? (
@@ -545,7 +585,7 @@ export const SupportCenter: React.FC = () => {
                         return (
                           <a
                             key={section.id}
-                            href={`#${section.id}`}
+                            href={`/support/${section.id}`}
                             aria-current={isActive ? 'page' : undefined}
                             onClick={(e) => {
                               e.preventDefault();
@@ -593,6 +633,10 @@ export const SupportCenter: React.FC = () => {
                   <div className="rounded-3xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card p-6 sm:p-8 shadow-sm">
                     {group.type === 'system-basics' ? (
                       <div className="mb-6 h-1.5 w-16 rounded-full bg-brand-blue/70" aria-hidden />
+                    ) : group.type === 'app-store' ? (
+                      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-blue/25 bg-brand-blue/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand-blue">
+                        iOS 12+
+                      </div>
                     ) : null}
                     <div className="flex flex-col gap-2">
                       <p className="text-xs uppercase tracking-[0.3em] text-light-muted dark:text-dark-muted">
@@ -614,7 +658,13 @@ export const SupportCenter: React.FC = () => {
                         >
                           <div className="flex items-center gap-3">
                             <span className="h-1.5 flex-1 rounded-full bg-light-border dark:bg-dark-border" />
-                            <span className="text-xs uppercase tracking-[0.3em] text-light-muted dark:text-dark-muted">
+                            <span
+                              className={`text-xs uppercase tracking-[0.3em] ${
+                                group.type === 'app-store'
+                                  ? 'text-brand-blue'
+                                  : 'text-light-muted dark:text-dark-muted'
+                              }`}
+                            >
                               {section.id}
                             </span>
                           </div>

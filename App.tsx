@@ -62,7 +62,8 @@ function App() {
     // send SPA pageview on route change if gtag initialized
     pageview(location.pathname + location.search);
     try {
-      const path = location.pathname.replace(/\/$/, '') || '/';
+      const rawPath = location.pathname.replace(/\/$/, '') || '/';
+      const path = rawPath.startsWith('/support/') ? '/support' : rawPath;
       const mapped = seo[path];
       if (mapped && mapped.title) {
         // set document.title to ensure immediate update on client navigation
@@ -87,6 +88,14 @@ function App() {
           <Route path="/terms" element={<Page><TermsOfService /></Page>} />
           <Route
             path="/support"
+            element={
+              <Page>
+                <SupportCenter />
+              </Page>
+            }
+          />
+          <Route
+            path="/support/:sectionSlug"
             element={
               <Page>
                 <SupportCenter />
