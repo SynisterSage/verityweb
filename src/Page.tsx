@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import seo, { SITE_URL } from './seo';
+import { getSmartAppBannerContent } from './appStore';
 
 interface PageProps {
   title?: string;
@@ -23,6 +24,7 @@ const Page: React.FC<PageProps> = ({ title, description, children }) => {
     : `${SITE_URL}${rawOgImage.startsWith('/') ? '' : '/'}${rawOgImage}`;
   const canonicalPath = pathname === '/' ? '/' : pathname;
   const canonicalUrl = `${SITE_URL}${canonicalPath}`;
+  const smartAppBannerContent = getSmartAppBannerContent(pathname);
   const isIndexable = routeSeo.indexable !== false;
   const robotsContent = isIndexable
     ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
@@ -31,6 +33,9 @@ const Page: React.FC<PageProps> = ({ title, description, children }) => {
   return (
     <>
       <Helmet>
+        {smartAppBannerContent ? (
+          <meta name="apple-itunes-app" content={smartAppBannerContent} />
+        ) : null}
         <title>{finalTitle}</title>
         <meta name="description" content={resolvedDescription} />
         <meta name="robots" content={robotsContent} />

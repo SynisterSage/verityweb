@@ -4,6 +4,7 @@ const path = require('path');
 const projectRoot = path.resolve(__dirname, '..');
 const distDir = path.join(projectRoot, 'dist');
 const seoPath = path.join(projectRoot, 'src', 'seo.json');
+const appStoreConfigPath = path.join(projectRoot, 'src', 'appStoreConfig.json');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -15,6 +16,14 @@ function loadSeo() {
     process.exit(1);
   }
   return JSON.parse(fs.readFileSync(seoPath, 'utf8'));
+}
+
+function loadAppStoreConfig() {
+  if (!fs.existsSync(appStoreConfigPath)) {
+    console.error('Missing src/appStoreConfig.json');
+    process.exit(1);
+  }
+  return JSON.parse(fs.readFileSync(appStoreConfigPath, 'utf8'));
 }
 
 function readTemplate() {
@@ -30,6 +39,7 @@ function removeExistingTags(head) {
   // remove title, description, og:*, twitter:*, canonical
   return head
     .replace(/<title>[\s\S]*?<\/title>/i, '')
+    .replace(/<meta[^>]+name=["']apple-itunes-app["'][^>]*>/i, '')
     .replace(/<meta[^>]+name=["']description["'][^>]*>/i, '')
     .replace(/<meta[^>]+name=["']robots["'][^>]*>/i, '')
     .replace(/<meta[^>]+name=["']googlebot["'][^>]*>/i, '')
@@ -75,6 +85,19 @@ function buildMeta({ title, description, ogImage, canonical, indexable, baseUrl 
   return parts.join('\n    ');
 }
 
+function normalizeRoute(route) {
+  return route.replace(/\/$/, '') || '/';
+}
+
+function getSmartAppBannerContent(route, appStoreConfig) {
+  const normalizedRoute = normalizeRoute(route);
+  if (!appStoreConfig.smartAppBannerRoutes.includes(normalizedRoute)) {
+    return null;
+  }
+
+  return `app-id=${appStoreConfig.appId}`;
+}
+
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
@@ -109,6 +132,7 @@ function writeForRoute(template, route, metaHtml) {
 
 function main() {
   const seo = loadSeo();
+  const appStoreConfig = loadAppStoreConfig();
   const template = readTemplate();
   const baseUrl = 'https://www.verityprotect.com';
 
@@ -116,15 +140,20 @@ function main() {
     const data = seo[route];
     const canonical = baseUrl + (route === '/' ? '/' : route);
     const title = data.title && data.title.includes('|') ? data.title : data.title;
-    const metaHtml = buildMeta({
+    const metaParts = [];
+    const smartAppBannerContent = getSmartAppBannerContent(route, appStoreConfig);
+    if (smartAppBannerContent) {
+      metaParts.push(`<meta name="apple-itunes-app" content="${escapeHtml(smartAppBannerContent)}" />`);
+    }
+    metaParts.push(buildMeta({
       title,
       description: data.description,
       ogImage: data.ogImage,
       canonical,
       indexable: data.indexable,
       baseUrl
-    });
-    writeForRoute(template, route, metaHtml);
+    }));
+    writeForRoute(template, route, metaParts.join('\n    '));
   });
 }
 

@@ -1,5 +1,21 @@
-export const APP_STORE_WEB_URL = 'https://apps.apple.com/us/app/verity-protect/id6759526773';
-const APP_STORE_IOS_URL = 'itms-apps://apps.apple.com/us/app/verity-protect/id6759526773';
+import appStoreConfig from './appStoreConfig.json';
+
+export const APP_STORE_ID = appStoreConfig.appId;
+export const APP_STORE_WEB_URL = appStoreConfig.webUrl;
+const APP_STORE_IOS_URL = appStoreConfig.iosUrl;
+const SMART_APP_BANNER_ROUTES = new Set(appStoreConfig.smartAppBannerRoutes);
+
+const normalizePathname = (pathname: string) => pathname.replace(/\/$/, '') || '/';
+
+// Keep the banner homepage-only until the app supports richer website routing context.
+export const getSmartAppBannerContent = (pathname: string) => {
+  const normalizedPathname = normalizePathname(pathname);
+  if (!SMART_APP_BANNER_ROUTES.has(normalizedPathname)) {
+    return null;
+  }
+
+  return `app-id=${APP_STORE_ID}`;
+};
 
 const isIOSDevice = () => {
   if (typeof navigator === 'undefined') return false;
