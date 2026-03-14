@@ -227,6 +227,10 @@ function main() {
     {
       question: "How is billing handled?",
       answer: "All charges run through Apple subscriptions so you manage, cancel, or change plans inside your Apple ID settings. Renewals include a 3-day grace period before protection pauses."
+    },
+    {
+      question: "What analytics and error tracking do you use?",
+      answer: "We use PostHog for product analytics, feature usage insights, and error monitoring so we can improve reliability and fix issues faster. We do not sell your data."
     }
   ];
 

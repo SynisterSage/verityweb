@@ -250,6 +250,17 @@ export const FAQ_CONTENT: ResourceSection[] = [
       'Keep the ticket open and share the receipt you received from Apple/Google; we can help agents check the right profile.',
     ],
   },
+  {
+    id: 'faq-posthog-analytics',
+    title: 'What analytics and error monitoring tools do you use?',
+    body:
+      'We use PostHog for product analytics, feature usage trends, and error monitoring so we can improve stability and understand what support flows need work.',
+    bullets: [
+      'PostHog helps us detect regressions faster when releases cause new issues.',
+      'Usage trends guide product improvements in onboarding, billing, and support flows.',
+      'We do not sell your data to advertisers.',
+    ],
+  },
 ];
 
 export const BILLING_CONTENT: ResourceSection[] = [
