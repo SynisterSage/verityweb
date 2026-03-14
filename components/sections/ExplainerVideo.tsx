@@ -92,14 +92,8 @@ export const ExplainerVideo: React.FC<ExplainerVideoProps> = ({
     <section
       ref={sectionRef}
       id="explainer-video"
-      className="relative py-24 lg:py-28 overflow-hidden bg-light-bg dark:bg-[#0a0f19]"
+      className="relative py-24 lg:py-28 overflow-hidden bg-brand-blue/5 border-t border-light-border dark:border-dark-border"
     >
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f6f9ff] via-[#f9fbff] to-[#edf2ff] dark:from-[#0b1321] dark:via-[#0a101c] dark:to-[#060912]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.14),transparent_45%),radial-gradient(circle_at_75%_30%,rgba(59,130,246,0.12),transparent_44%)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.12),transparent_42%),radial-gradient(circle_at_75%_30%,rgba(59,130,246,0.08),transparent_40%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/40 dark:from-transparent dark:via-transparent dark:to-transparent" />
-      </div>
-
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">

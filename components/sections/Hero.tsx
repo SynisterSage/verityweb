@@ -29,17 +29,20 @@ export const Hero: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center lg:items-start">
           
           {/* Text Content */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
-            <div className="animate-in slide-in-from-bottom-4 fade-in duration-700">
-               <Badge>For Families</Badge>
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+              <Badge>For Families</Badge>
+              <Badge>7-day free trial</Badge>
             </div>
-            
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-light-text dark:text-dark-text leading-[1.1] animate-in slide-in-from-bottom-4 fade-in duration-700 delay-100">
               The smart shield for your <span className="text-brand-blue">family's phone.</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-light-muted dark:text-dark-muted max-w-lg leading-relaxed animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
               Verity screens unknown callers so your loved ones don't have to. We block fraud, let family through, and give you peace of mind.
+            </p>
+            <p className="text-sm sm:text-base text-light-muted dark:text-dark-muted max-w-lg leading-relaxed animate-in slide-in-from-bottom-4 fade-in duration-700 delay-250">
+              Start with a 7-day free trial on the monthly plan. Apple billing applies after trial unless canceled.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
@@ -63,7 +66,6 @@ export const Hero: React.FC = () => {
             {/* Decorative circles behind phone */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] border border-brand-blue/20 rounded-full"></div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-brand-blue/10 rounded-full"></div>
-            
             <PhoneMockup
               screens={HERO_MOCKUP_SCREENS}
               autoPlayMs={2600}

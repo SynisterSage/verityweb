@@ -29,7 +29,15 @@ const FAQ_ITEMS: FaqItem[] = [
   },
   {
     question: "How much does this cost?",
-    answer: "Verity Protect is $9.99/month or $99.99/year (about 17% off compared to monthly billing)."
+    answer: "Verity Protect is $9.99/month or $99.99/year (about 17% off compared to monthly billing). The monthly plan starts with a 7-day free trial before Apple charges your account."
+  },
+  {
+    question: "Is there a free trial?",
+    answer: "Yes. The monthly plan begins with a 7-day free trial. We surface an in-app reminder when two days remain so you can keep protection or cancel before the charge hits your Apple ID."
+  },
+  {
+    question: "How is billing handled?",
+    answer: "All charges run through Apple subscriptions so you manage, cancel, or change plans inside your Apple ID settings. Renewals include a 3-day grace period before protection pauses."
   }
 ];
 
