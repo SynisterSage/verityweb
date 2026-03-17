@@ -6,10 +6,11 @@ import { getSmartAppBannerContent } from './appStore';
 interface PageProps {
   title?: string;
   description?: string;
+  indexable?: boolean;
   children: React.ReactNode;
 }
 
-const Page: React.FC<PageProps> = ({ title, description, children }) => {
+const Page: React.FC<PageProps> = ({ title, description, indexable, children }) => {
   const base = 'Verity Protect';
   const rawPath = typeof window !== 'undefined' ? window.location.pathname : '/';
   const pathname = rawPath.replace(/\/$/, '') || '/';
@@ -25,7 +26,7 @@ const Page: React.FC<PageProps> = ({ title, description, children }) => {
   const canonicalPath = pathname === '/' ? '/' : pathname;
   const canonicalUrl = `${SITE_URL}${canonicalPath}`;
   const smartAppBannerContent = getSmartAppBannerContent(pathname);
-  const isIndexable = routeSeo.indexable !== false;
+  const isIndexable = typeof indexable === 'boolean' ? indexable : routeSeo.indexable !== false;
   const robotsContent = isIndexable
     ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'
     : 'noindex,nofollow,noarchive';

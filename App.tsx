@@ -97,6 +97,7 @@ function App() {
               <Page
                 title="Facility resident offer"
                 description="Claim your facility resident offer and continue to download or open Verity Protect."
+                indexable={false}
               >
                 <FacilityResidentOffer />
               </Page>

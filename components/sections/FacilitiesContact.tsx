@@ -126,7 +126,11 @@ export const FacilitiesContact: React.FC = () => {
               Thanks for reaching out. Our team will contact you shortly.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-              <Button variant="outline" onClick={() => setStatus('idle')}>
+              <Button
+                variant="outline"
+                onClick={() => setStatus('idle')}
+                className="border-green-500/35 text-green-600 hover:border-green-500 hover:text-green-500 dark:text-green-300 dark:border-green-500/30 dark:hover:border-green-400 dark:hover:text-green-200 focus-visible:ring-green-500/40"
+              >
                 Submit another request
               </Button>
               <Button onClick={openAppStore}>

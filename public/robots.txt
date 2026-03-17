@@ -2,6 +2,7 @@
 # Allow all crawlers
 User-agent: *
 Allow: /
+Disallow: /f/
 
 # Sitemap location
 Sitemap: https://www.verityprotect.com/sitemap.xml
