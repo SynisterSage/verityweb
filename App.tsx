@@ -17,6 +17,7 @@ import seo from './src/seo';
 import { AuthCallbackPage } from './components/sections/AuthCallbackPage';
 import { SupportCenter } from './components/sections/SupportCenter';
 import { FacilitiesContact } from './components/sections/FacilitiesContact';
+import { FacilityResidentOffer } from './components/sections/FacilityResidentOffer';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -87,6 +88,17 @@ function App() {
             element={
               <Page>
                 <FacilitiesContact />
+              </Page>
+            }
+          />
+          <Route
+            path="/f/:facilitySlug"
+            element={
+              <Page
+                title="Facility resident offer"
+                description="Claim your facility resident offer and continue to download or open Verity Protect."
+              >
+                <FacilityResidentOffer />
               </Page>
             }
           />
