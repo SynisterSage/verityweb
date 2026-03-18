@@ -18,6 +18,7 @@ import { AuthCallbackPage } from './components/sections/AuthCallbackPage';
 import { SupportCenter } from './components/sections/SupportCenter';
 import { FacilitiesContact } from './components/sections/FacilitiesContact';
 import { FacilityResidentOffer } from './components/sections/FacilityResidentOffer';
+import { InviteLanding } from './components/sections/InviteLanding';
 
 function Home({ scrollTo }: { scrollTo?: string }) {
   React.useEffect(() => {
@@ -100,6 +101,30 @@ function App() {
                 indexable={false}
               >
                 <FacilityResidentOffer />
+              </Page>
+            }
+          />
+          <Route
+            path="/invite"
+            element={
+              <Page
+                title="Circle invite"
+                description="Use your invite link to open Verity Protect and join the shared circle."
+                indexable={false}
+              >
+                <InviteLanding />
+              </Page>
+            }
+          />
+          <Route
+            path="/invite/:inviteToken"
+            element={
+              <Page
+                title="Circle invite"
+                description="Use your invite link to open Verity Protect and join the shared circle."
+                indexable={false}
+              >
+                <InviteLanding />
               </Page>
             }
           />

@@ -3,6 +3,7 @@
 User-agent: *
 Allow: /
 Disallow: /f/
+Disallow: /invite/
 
 # Sitemap location
 Sitemap: https://www.verityprotect.com/sitemap.xml
