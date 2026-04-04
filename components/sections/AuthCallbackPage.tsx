@@ -4,6 +4,19 @@ import { ClipboardCopy, Loader2, ShieldCheck, Eye, EyeOff, Check } from 'lucide-
 import { Button } from '../ui/Button';
 
 const FALLBACK_REDIRECT = 'verityprotect://auth/callback';
+const MOBILE_REGEX = /iPhone|iPad|iPod|Android/i;
+const DEEP_LINK_TIMEOUT = 2000; // milliseconds
+
+// Helper function to validate email format
+const isValidEmail = (email: string | null): email is string => {
+  return typeof email === 'string' && email.includes('@');
+};
+
+// Helper function to detect mobile device
+const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return MOBILE_REGEX.test(navigator.userAgent);
+};
 
 const stageContent = {
   connecting: {
@@ -27,9 +40,56 @@ const stageContent = {
 };
 
 export const AuthCallbackPage: React.FC = () => {
+  // URL Parameters
   const [emailParam, setEmailParam] = useState<string | null>(null);
+  const [tokenParam, setTokenParam] = useState<string | null>(null);
+  const [typeParam, setTypeParam] = useState<string>('verify');
+  const [errorDescription, setErrorDescription] = useState<string | null>(null);
+  const [errorParam, setErrorParam] = useState<string | null>(null);
+  
+  // Legacy params for password reset
   const [modeParam, setModeParam] = useState<string | null>(null);
   const [sourceParam, setSourceParam] = useState<string>('confirmation');
+  const [resetToken, setResetToken] = useState<string | null>(null);
+
+  // UI State
+  const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
+  const [linkError, setLinkError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [appNotInstalled, setAppNotInstalled] = useState(false);
+  const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
+
+  // Password reset state
+  const [resetState, setResetState] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Refs and tracking
+  const redirectedRef = useRef(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState(false);
+  const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [autoRedirected, setAutoRedirected] = useState(false);
+
+  const isResetFlow = modeParam === 'reset' && sourceParam === 'password';
+
+  // Build deep link with proper URL encoding
+  const deepLink = useMemo(() => {
+    if (!isValidEmail(emailParam) || !tokenParam) {
+      return null;
+    }
+    const params = new URLSearchParams();
+    params.set('email', emailParam);
+    params.set('token', tokenParam);
+    params.set('type', typeParam || 'verify');
+    return `verityprotect://auth/callback?${params.toString()}`;
+  }, [emailParam, tokenParam, typeParam]);
+
+  // Legacy scheme URL for backwards compatibility
   const schemeUrl = useMemo(() => {
     const params = new URLSearchParams();
     params.set('source', sourceParam || 'confirmation');
@@ -41,18 +101,6 @@ export const AuthCallbackPage: React.FC = () => {
     }
     return `verityprotect://auth/callback?${params.toString()}`;
   }, [emailParam, modeParam, sourceParam]);
-  const [redirectUri, setRedirectUri] = useState(FALLBACK_REDIRECT);
-  const [stage, setStage] = useState<'connecting' | 'success' | 'failed'>('connecting');
-  const [linkError, setLinkError] = useState<string | null>(null);
-  const redirectedRef = useRef(false);
-  const [resetToken, setResetToken] = useState<string | null>(null);
-  const [resetState, setResetState] = useState<'idle' | 'submitting' | 'success'>('idle');
-  const [resetError, setResetError] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const isResetFlow = modeParam === 'reset' && sourceParam === 'password';
 
   const passwordRequirements = useMemo(() => [
     { label: 'At least 8 characters', met: newPassword.length >= 8 },
@@ -60,6 +108,7 @@ export const AuthCallbackPage: React.FC = () => {
     { label: 'Contains a special character', met: /[^a-zA-Z0-9]/.test(newPassword) },
   ], [newPassword]);
 
+  // Initialize: Parse URL parameters and handle mobile deep linking
   useEffect(() => {
     if (redirectedRef.current || typeof window === 'undefined') return;
     redirectedRef.current = true;
@@ -68,73 +117,80 @@ export const AuthCallbackPage: React.FC = () => {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const getParam = (key: string) => searchParams.get(key) ?? hashParams.get(key);
 
+    // Parse standard email confirmation parameters
     const email = getParam('email');
-    if (email) {
-      setEmailParam(email);
-    }
     const token = getParam('token') ?? getParam('access_token');
-    if (token) {
-      setResetToken(token);
+    const type = getParam('type') ?? 'verify';
+    const errDesc = getParam('error_description');
+    const err = getParam('error');
+
+    // Set parameters
+    if (email) setEmailParam(email);
+    if (token) setTokenParam(token);
+    if (type) setTypeParam(type);
+    if (errDesc) setErrorDescription(errDesc);
+    if (err) setErrorParam(err);
+
+    // Handle error state
+    if (errDesc || err) {
+      setStage('failed');
+      setLinkError(errDesc || 'Authentication error. Please request a fresh confirmation email.');
+      return;
     }
-    const type = getParam('type');
-    const mode = getParam('mode') ?? (type === 'recovery' ? 'reset' : null);
-    if (mode) {
-      setModeParam(mode);
+
+    // Legacy password reset flow detection
+    const legacyToken = getParam('token') ?? getParam('access_token');
+    if (legacyToken) {
+      setResetToken(legacyToken);
     }
-    const source = getParam('source') ?? (type === 'recovery' ? 'password' : null);
-    if (source) {
-      setSourceParam(source);
+    const legacyMode = getParam('mode') ?? (type === 'recovery' ? 'reset' : null);
+    if (legacyMode) {
+      setModeParam(legacyMode);
     }
+    const legacySource = getParam('source') ?? (type === 'recovery' ? 'password' : null);
+    if (legacySource) {
+      setSourceParam(legacySource);
+    }
+
     const target = searchParams.get('redirect_to') || hashParams.get('redirect_to') || FALLBACK_REDIRECT;
     setRedirectUri(target);
 
-    const errorDescription = getParam('error_description');
-    if (errorDescription) {
+    // Check if this is a password reset flow
+    const isPasswordReset = legacyMode === 'reset' && legacySource === 'password';
+    if (isPasswordReset) {
+      return;
+    }
+
+    // Detect if user is on mobile
+    const mobileDetected = isMobileDevice();
+    setIsMobile(mobileDetected);
+
+    // Handle mobile deep linking
+    if (mobileDetected && isValidEmail(email) && token) {
+      // Valid email and token - attempt deep link
+      const deepLinkUrl = `verityprotect://auth/callback?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}&type=${encodeURIComponent(type || 'verify')}`;
+      
+      // Attempt redirect with timeout fallback
+      const timeoutId = window.setTimeout(() => {
+        // Timeout reached - app not installed, show web UI
+        setAppNotInstalled(true);
+        setStage('connecting');
+      }, DEEP_LINK_TIMEOUT);
+
+      // Attempt the deep link
+      window.location.href = deepLinkUrl;
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    } else if (mobileDetected && isValidEmail(email)) {
+      // Mobile but missing token - show error
       setStage('failed');
-      setLinkError('This link was already used; request a fresh confirmation email.');
+      setLinkError('Invalid or expired confirmation link. Please request a fresh email.');
       return;
     }
 
-    const schemeParams = new URLSearchParams();
-    schemeParams.set('source', source || 'confirmation');
-    if (mode) {
-      schemeParams.set('mode', mode);
-    }
-    if (email) {
-      schemeParams.set('email', email);
-    }
-    
-    // Pass through critical Supabase auth parameters for exchangeCodeForSession
-    const code = getParam('code');
-    const codeVerifier = getParam('code_verifier');
-    const accessToken = getParam('access_token');
-    const refreshToken = getParam('refresh_token');
-    
-    if (code) {
-      schemeParams.set('code', code);
-    }
-    if (codeVerifier) {
-      schemeParams.set('code_verifier', codeVerifier);
-    }
-    if (accessToken) {
-      schemeParams.set('access_token', accessToken);
-    }
-    if (refreshToken) {
-      schemeParams.set('refresh_token', refreshToken);
-    }
-    
-    const immediateSchemeUrl = `verityprotect://auth/callback?${schemeParams.toString()}`;
-
-    if (type === 'oauth') {
-      window.location.href = immediateSchemeUrl;
-      return;
-    }
-
-    const isRecoveryLink = mode === 'reset' && source === 'password';
-    if (isRecoveryLink) {
-      return;
-    }
-
+    // Non-mobile flow: show success stage after delay
     const successTimer = window.setTimeout(() => setStage('success'), 1500);
     const failTimer = window.setTimeout(() => setStage(prev => (prev === 'connecting' ? 'failed' : prev)), 60_000);
 
@@ -144,6 +200,7 @@ export const AuthCallbackPage: React.FC = () => {
     };
   }, []);
 
+  // Clean hash from URL
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const hash = window.location.hash;
@@ -151,20 +208,13 @@ export const AuthCallbackPage: React.FC = () => {
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
 
-  const manualHref = schemeUrl;
-  const { title, description, indicator, button } = stageContent[stage];
-  const isSuccess = stage === 'success';
-  const indicatorColor = stage === 'failed' ? 'bg-red-400' : isSuccess ? 'bg-emerald-400' : 'bg-brand-blue/70';
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
-  const [qrError, setQrError] = useState(false);
-  const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const [autoRedirected, setAutoRedirected] = useState(false);
-
+  // Handle manual redirects
+  const manualHref = deepLink || schemeUrl;
   const handleManualRedirect = () => {
-    window.location.href = schemeUrl;
+    window.location.href = manualHref;
   };
 
+  // Password reset handler
   const handleResetSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!resetToken) {
@@ -216,6 +266,7 @@ export const AuthCallbackPage: React.FC = () => {
     }
   };
 
+  // Generate QR code for desktop users
   useEffect(() => {
     if (isResetFlow || !manualHref || !isDesktop) {
       setQrDataUrl(null);
@@ -239,6 +290,7 @@ export const AuthCallbackPage: React.FC = () => {
     };
   }, [manualHref, isDesktop, isResetFlow]);
 
+  // Auto-redirect for success stage
   useEffect(() => {
     if (stage !== 'success' || linkError || autoRedirected || isResetFlow) return;
     const timer = window.setTimeout(() => {
@@ -248,6 +300,7 @@ export const AuthCallbackPage: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [stage, linkError, schemeUrl, autoRedirected, isResetFlow]);
 
+  // Detect desktop vs mobile device
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -266,6 +319,7 @@ export const AuthCallbackPage: React.FC = () => {
     };
   }, []);
 
+  // Copy link to clipboard
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(manualHref);
@@ -275,13 +329,67 @@ export const AuthCallbackPage: React.FC = () => {
     }
   };
 
+  // Computed values
+  const { title, description, indicator, button } = stageContent[stage];
+  const isSuccess = stage === 'success';
+  const indicatorColor = stage === 'failed' ? 'bg-red-400' : isSuccess ? 'bg-emerald-400' : 'bg-brand-blue/70';
+
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg flex items-center justify-center px-4 py-24">
       <div className="w-full max-w-[620px] space-y-8">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-light-card dark:bg-dark-card/90 p-8 shadow-[0_30px_120px_rgba(3,6,15,0.6)] backdrop-blur-[24px] sm:px-10">
           <div className="absolute -left-16 top-4 h-48 w-48 rounded-full bg-brand-blue/10 blur-[80px]" />
           <div className="absolute right-[-20%] bottom-0 h-96 w-96 rounded-full bg-brand-blue/30 opacity-20 blur-[140px]" />
-          {isResetFlow ? (
+          {/* SCENARIO: Mobile with app not installed - Web confirmation UI */}
+          {isMobile && appNotInstalled && isValidEmail(emailParam) && (
+            <div className="relative flex flex-col gap-6 text-left text-light-text dark:text-light-text">
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
+                  Confirm your email
+                </p>
+                <h2 className="text-4xl font-semibold text-light-text dark:text-white">Check your email</h2>
+                <p className="text-base text-light-muted dark:text-light-muted/90">
+                  Check your email to confirm your address
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm text-light-muted dark:text-light-muted/80">
+                  We've sent a confirmation link to <span className="font-semibold text-light-text dark:text-white">{emailParam}</span>. Click the link in your email to verify your address.
+                </p>
+
+                <div className="rounded-2xl border border-yellow-200/60 bg-yellow-50/60 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-500/60 dark:bg-yellow-900/30 dark:text-yellow-100">
+                  <p className="font-semibold mb-1">SafeCall app not installed</p>
+                  <p className="text-[13px] text-yellow-800/80 dark:text-yellow-200/80">
+                    Install the SafeCall app from the App Store to complete confirmation directly in the app.
+                  </p>
+                </div>
+
+                <Button
+                  size="lg"
+                  fullWidth
+                  onClick={() => {
+                    // Attempt to open app store
+                    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                    const storeUrl = isIOS 
+                      ? 'https://apps.apple.com/app/safecall/id6734567890'
+                      : 'https://play.google.com/store/apps/details?id=com.verityprotect.safecall';
+                    window.open(storeUrl, '_blank');
+                  }}
+                  className="w-full bg-brand-blue text-white shadow-[0_10px_30px_rgba(45,109,246,0.35)]"
+                >
+                  Install SafeCall App
+                </Button>
+
+                <p className="text-xs text-light-muted dark:text-light-muted/90 text-center">
+                  Already confirmed? <a href="/" className="text-brand-blue hover:underline font-semibold">Return to home</a>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* SCENARIO: Password reset flow */}
+          {isResetFlow && (
             <div className="relative flex flex-col gap-6 text-left text-light-text dark:text-light-text sm:text-left">
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-dark-text dark:text-light-muted">
@@ -424,7 +532,10 @@ export const AuthCallbackPage: React.FC = () => {
                 </p>
               </div>
             </div>
-          ) : (
+          )}
+
+          {/* SCENARIO: Standard redirect flow (connecting/success/failed stages) */}
+          {!isResetFlow && !(isMobile && appNotInstalled) && (
             <div className="relative flex flex-col items-center gap-6 text-center text-light-text dark:text-light-text">
               <div
                 className={`flex h-20 w-20 items-center justify-center rounded-[26px] border border-white/10 bg-brand-blue/10 ${
