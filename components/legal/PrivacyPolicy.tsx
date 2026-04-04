@@ -26,7 +26,7 @@ export const PrivacyPolicy: React.FC = () => {
           <strong>Effective Date:</strong> February 20, 2026
         </p>
         <p className="text-sm text-light-muted dark:text-dark-muted mb-6">
-          <strong>Last Updated:</strong> February 20, 2026
+          <strong>Last Updated:</strong> April 4, 2026
         </p>
         <div className="prose prose-sm max-w-none text-light-muted dark:text-dark-muted">
           <p className="leading-relaxed">
@@ -113,6 +113,33 @@ export const PrivacyPolicy: React.FC = () => {
             <h4 className="font-bold text-light-text dark:text-dark-text mb-3">Cookies and Tracking Technologies:</h4>
             <p className="text-sm text-light-muted dark:text-dark-muted mb-2">
               Our website uses cookies and similar technologies for authentication, preferences, and analytics. You can control cookie preferences through your browser settings.
+            </p>
+          </div>
+
+          <h3 className="text-xl font-semibold text-light-text dark:text-dark-text mb-4 mt-8">1.4 Device Permissions (iOS App)</h3>
+          
+          <p className="text-sm text-light-muted dark:text-dark-muted mb-4">The Verity Protect app requests the following device permissions:</p>
+          
+          <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border p-6 rounded-xl mb-6">
+            <h4 className="font-bold text-light-text dark:text-dark-text mb-3">Required Permissions:</h4>
+            <ul className="list-disc list-inside space-y-2 text-sm text-light-muted dark:text-dark-muted">
+              <li><strong className="text-light-text dark:text-dark-text">Microphone:</strong> Used to transmit audio during live call screening through Verity's VoIP bridge. Only active during bridged calls. We do not record your microphone input.</li>
+              <li><strong className="text-light-text dark:text-dark-text">Notifications:</strong> Used to deliver real-time fraud alerts, suspicious call warnings, and circle activity updates. App works without notifications, but real-time delivery requires this permission.</li>
+            </ul>
+          </div>
+
+          <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border p-6 rounded-xl mb-6">
+            <h4 className="font-bold text-light-text dark:text-dark-text mb-3">Optional Permissions:</h4>
+            <ul className="list-disc list-inside space-y-2 text-sm text-light-muted dark:text-dark-muted">
+              <li><strong className="text-light-text dark:text-dark-text">Contacts:</strong> Used to populate your trusted contact list and display caller names. You grant access to specific contacts you add to your account. We do not access your entire contact list without permission. You can revoke access anytime through Settings → Data & Privacy.</li>
+              <li><strong className="text-light-text dark:text-dark-text">Phone:</strong> Used during onboarding to pre-fill your phone number and display your Verity Number. Does not grant access to call history or cellular data.</li>
+            </ul>
+          </div>
+
+          <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border p-6 rounded-xl">
+            <h4 className="font-bold text-light-text dark:text-dark-text mb-3 text-red-600 dark:text-red-400">Not Currently Used:</h4>
+            <p className="text-sm text-light-muted dark:text-dark-muted">
+              <strong>Photos/Camera/Library:</strong> Currently not used for any functionality in the app. If requested during onboarding, it is for future reserved features. You can safely deny this permission.
             </p>
           </div>
         </section>

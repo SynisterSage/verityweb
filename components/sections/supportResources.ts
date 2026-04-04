@@ -141,6 +141,19 @@ export const PRIVACY_CONTENT: ResourceSection[] = [
       'Verity Protect was built for families and caretakers. We only store what is required to protect you, encrypt it, and give you tools to control every call and message that passes through the service.',
   },
   {
+    id: 'privacy-permissions',
+    title: 'Device permissions & what they do',
+    body:
+      'The Verity Protect app requests specific device permissions to function securely. Here\'s what each permission does and whether it\'s required.',
+    bullets: [
+      'Microphone (Required): Used only to transmit audio during live call screening through Verity\'s VoIP bridge. We do not record your microphone input; you control your own audio transmission.',
+      'Notifications (Required): Used to deliver real-time fraud alerts, suspicious call warnings, and circle activity updates. The app works without notifications enabled, but real-time delivery requires this permission.',
+      'Contacts (Optional): Used to populate your trusted contact list and display caller names. You grant access only to specific contacts you add to your account. You can revoke access anytime through Settings → Data & Privacy.',
+      'Phone (Optional): Used during onboarding to pre-fill your phone number and display your Verity Number. Does not grant access to call history or cellular data.',
+      'Photos/Camera/Library (Not Used): Currently not used for any functionality in the app. If requested during onboarding, it is for future reserved features. You can safely deny this permission.',
+    ],
+  },
+  {
     id: 'privacy-data',
     title: 'What we collect',
     body:
