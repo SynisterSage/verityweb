@@ -150,7 +150,7 @@ export const PRIVACY_CONTENT: ResourceSection[] = [
       'Notifications (Required): Used to deliver real-time fraud alerts, suspicious call warnings, and circle activity updates. The app works without notifications enabled, but real-time delivery requires this permission.',
       'Contacts (Optional): Used to populate your trusted contact list and display caller names. You grant access only to specific contacts you add to your account. You can revoke access anytime through Settings → Data & Privacy.',
       'Phone (Optional): Used during onboarding to pre-fill your phone number and display your Verity Number. Does not grant access to call history or cellular data.',
-      'Photos/Camera/Library (Not Used): Currently not used for any functionality in the app. If requested during onboarding, it is for future reserved features. You can safely deny this permission.',
+      'Photos/Camera/Library (Optional - New in 1.1.0): Used to upload profile pictures for your account and circle members. Photos are stored securely and shared only with authorized circle members. You can delete pictures anytime through Settings.'
     ],
   },
   {

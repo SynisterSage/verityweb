@@ -137,10 +137,10 @@ export const PrivacyPolicy: React.FC = () => {
           </div>
 
           <div className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border p-6 rounded-xl">
-            <h4 className="font-bold text-light-text dark:text-dark-text mb-3 text-red-600 dark:text-red-400">Not Currently Used:</h4>
-            <p className="text-sm text-light-muted dark:text-dark-muted">
-              <strong>Photos/Camera/Library:</strong> Currently not used for any functionality in the app. If requested during onboarding, it is for future reserved features. You can safely deny this permission.
-            </p>
+            <h4 className="font-bold text-light-text dark:text-dark-text mb-3">New in 1.1.0:</h4>
+            <ul className="list-disc list-inside space-y-2 text-sm text-light-muted dark:text-dark-muted">
+              <li><strong className="text-light-text dark:text-dark-text">Photos/Camera/Library:</strong> Used to upload profile pictures for your account and circle members. Photos are stored locally and shared only with authorized circle members. You can revoke access or delete pictures anytime through Settings.</li>
+            </ul>
           </div>
         </section>
 
