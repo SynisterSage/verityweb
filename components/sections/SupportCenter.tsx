@@ -480,25 +480,23 @@ export const SupportCenter: React.FC = () => {
   return (
     <section className="py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-3 text-center lg:text-left">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand-blue">Support hub</p>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-light-text dark:text-dark-text">
-            Your support center
+        <div className="mb-12 border-b border-light-border dark:border-dark-border pb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-light-text dark:text-dark-text mb-3">
+            Support Center
           </h1>
-          <p className="text-base sm:text-lg text-light-muted dark:text-dark-muted max-w-3xl">
+          <p className="text-base text-light-muted dark:text-dark-muted max-w-3xl">
             Browse system basics, privacy notes, FAQs, billing answers, and iOS age-suitability guidance in one place.
           </p>
         </div>
-
-        <div className="mt-8 border-t border-light-border dark:border-dark-border pt-6">
+        <div>
           <label
             htmlFor="support-search"
-            className="text-xs sm:text-sm uppercase tracking-[0.2em] text-light-muted dark:text-dark-muted"
+            className="text-xs uppercase tracking-wider font-semibold text-light-text dark:text-dark-text"
           >
-            Search the support center
+            Search support
           </label>
 
-          <div className="mt-3 relative max-w-4xl">
+          <div className="mt-3 relative max-w-2xl">
             <Search
               size={18}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-light-muted dark:text-dark-muted pointer-events-none"
@@ -509,13 +507,13 @@ export const SupportCenter: React.FC = () => {
               value={query}
               onChange={handleSearchChange}
               placeholder="Try: billing refund, trusted contacts, iOS 12+"
-              className="support-search-input w-full rounded-xl border border-light-border dark:border-dark-border bg-transparent pl-10 pr-11 py-3 text-sm sm:text-base text-light-text dark:text-dark-text placeholder:text-light-muted dark:placeholder:text-dark-muted focus:outline-none focus:ring-2 focus:ring-brand-blue/40 appearance-none"
+              className="support-search-input w-full rounded-lg border border-light-border dark:border-dark-border bg-transparent pl-10 pr-11 py-3 text-sm text-light-text dark:text-dark-text placeholder:text-light-muted dark:placeholder:text-dark-muted focus:outline-none focus:ring-2 focus:ring-brand-blue/40 appearance-none"
             />
             {query ? (
               <button
                 type="button"
                 onClick={clearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg text-light-muted dark:text-dark-muted hover:text-light-text dark:hover:text-dark-text hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-light-muted dark:text-dark-muted hover:text-light-text dark:hover:text-dark-text transition-colors"
                 aria-label="Clear support search"
               >
                 <X size={16} />
@@ -523,7 +521,7 @@ export const SupportCenter: React.FC = () => {
             ) : null}
           </div>
 
-          <p className="mt-2 text-xs sm:text-sm text-light-muted dark:text-dark-muted">
+          <p className="mt-2 text-xs text-light-muted dark:text-dark-muted">
             {normalizedQuery
               ? `${searchMatches.length} ${searchMatches.length === 1 ? 'match' : 'matches'} found`
               : `${sectionIds.length} sections available`}
@@ -536,7 +534,7 @@ export const SupportCenter: React.FC = () => {
                   key={`match-${section.id}`}
                   type="button"
                   onClick={() => scrollToSection(section.id)}
-                  className="rounded-full border border-light-border dark:border-dark-border bg-light-bg/60 dark:bg-dark-bg/60 px-3 py-1.5 text-xs sm:text-sm text-light-text dark:text-dark-text hover:border-brand-blue/40 hover:text-brand-blue transition-colors"
+                  className="rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs text-light-text dark:text-dark-text hover:border-brand-blue/60 hover:text-brand-blue transition-colors"
                 >
                   {section.title}
                 </button>
@@ -570,19 +568,19 @@ export const SupportCenter: React.FC = () => {
           </select>
         </div>
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[260px,1fr]">
-          <aside className="hidden lg:block sticky top-24 self-start rounded-3xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card p-5 shadow-sm">
+        <div className="mt-12 grid gap-10 lg:grid-cols-[240px,1fr]">
+          <aside className="hidden lg:block sticky top-24 self-start">
             {visibleGroups.length > 0 ? (
-              <nav className="flex flex-col gap-6" aria-label="Support section navigation">
+              <nav className="space-y-8" aria-label="Support section navigation">
                 {visibleGroups.map((group) => (
-                  <div key={group.type} className="space-y-2 flex flex-col gap-2">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-light-muted dark:text-dark-muted">
+                  <div key={group.type}>
+                    <div className="mb-3">
+                      <p className="text-xs uppercase tracking-wider font-semibold text-light-text dark:text-dark-text">
                         {group.title}
                       </p>
-                      <p className="text-xs text-light-text dark:text-dark-text">{group.description}</p>
+                      <p className="text-xs text-light-muted dark:text-dark-muted mt-1">{group.description}</p>
                     </div>
-                    <div className="space-y-1 flex flex-col gap-1">
+                    <div className="space-y-2">
                       {group.sections.map((section) => {
                         const isActive = activeSection === section.id;
                         return (
@@ -594,11 +592,11 @@ export const SupportCenter: React.FC = () => {
                               e.preventDefault();
                               scrollToSection(section.id);
                             }}
-                            className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150 ${
+                            className={`block px-3 py-2 text-sm transition-colors duration-150 ${
                               isActive
-                                ? 'bg-brand-blue/15 text-light-text dark:text-white'
+                                ? 'text-brand-blue font-medium'
                                 : 'text-light-text dark:text-dark-text hover:text-brand-blue'
-                            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-blue/60`}
+                            }`}
                           >
                             {section.title}
                           </a>
@@ -617,15 +615,15 @@ export const SupportCenter: React.FC = () => {
 
           <div className="space-y-12">
             {visibleGroups.length === 0 ? (
-              <div className="rounded-3xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card p-8 text-center">
+              <div className="border-t border-light-border dark:border-dark-border pt-8 text-center">
                 <h2 className="text-2xl font-semibold text-light-text dark:text-dark-text">No matching support articles</h2>
-                <p className="mt-3 text-sm sm:text-base text-light-muted dark:text-dark-muted">
+                <p className="mt-3 text-sm text-light-muted dark:text-dark-muted">
                   Try broader terms like "billing", "automation", "safe phrases", or "trusted contacts".
                 </p>
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="mt-5 inline-flex items-center rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue hover:bg-brand-blue/15 transition-colors"
+                  className="mt-5 inline-flex items-center rounded-lg border border-brand-blue/30 bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue hover:bg-brand-blue/15 transition-colors"
                 >
                   Clear search
                 </button>
@@ -633,19 +631,12 @@ export const SupportCenter: React.FC = () => {
             ) : (
               visibleGroups.map((group) => (
                 <div key={group.type}>
-                  <div className="rounded-3xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card p-6 sm:p-8 shadow-sm">
-                    {group.type === 'system-basics' ? (
-                      <div className="mb-6 h-1.5 w-16 rounded-full bg-brand-blue/70" aria-hidden />
-                    ) : group.type === 'app-store' ? (
-                      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-blue/25 bg-brand-blue/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand-blue">
-                        iOS 12+
-                      </div>
-                    ) : null}
-                    <div className="flex flex-col gap-2">
-                      <p className="text-xs uppercase tracking-[0.3em] text-light-muted dark:text-dark-muted">
+                  <div className="border-t border-light-border dark:border-dark-border pt-8">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider font-semibold text-light-text dark:text-dark-text">
                         {group.title}
                       </p>
-                      <p className="text-sm text-light-text dark:text-dark-text">{group.description}</p>
+                      <p className="text-sm text-light-muted dark:text-dark-muted mt-2">{group.description}</p>
                     </div>
 
                     <div className="mt-8 space-y-8">
@@ -653,39 +644,23 @@ export const SupportCenter: React.FC = () => {
                         <article
                           id={section.id}
                           key={section.id}
-                          className={`space-y-4 scroll-mt-28 ${
-                            group.type === 'system-basics'
-                              ? 'border-l-2 border-brand-blue/30 pl-4 sm:pl-5'
-                              : ''
-                          }`}
+                          className="space-y-3 scroll-mt-28"
                         >
-                          <div className="flex items-center gap-3">
-                            <span className="h-1.5 flex-1 rounded-full bg-light-border dark:bg-dark-border" />
-                            <span
-                              className={`text-xs uppercase tracking-[0.3em] ${
-                                group.type === 'app-store'
-                                  ? 'text-brand-blue'
-                                  : 'text-light-muted dark:text-dark-muted'
-                              }`}
-                            >
-                              {section.id}
-                            </span>
-                          </div>
-                          <h3 className="text-2xl font-semibold text-light-text dark:text-dark-text">
+                          <h3 className="text-xl font-semibold text-light-text dark:text-dark-text">
                             {section.title}
                           </h3>
                           <p className="text-base text-light-muted dark:text-dark-muted leading-relaxed">
                             {section.body}
                           </p>
                           {section.references?.length ? (
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-3 pt-2">
                               {section.references.map((reference) => (
                                 <a
                                   key={`${section.id}-${reference.url}-${reference.label}`}
                                   href={reference.url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue hover:underline"
+                                  className="text-sm text-brand-blue hover:underline font-medium"
                                 >
                                   {reference.prefix ? `${reference.prefix}: ` : ''}
                                   {reference.label}
@@ -694,7 +669,7 @@ export const SupportCenter: React.FC = () => {
                             </div>
                           ) : null}
                           {section.bullets ? (
-                            <ul className="space-y-2 text-sm text-light-text dark:text-dark-text list-disc list-inside marker:text-brand-blue dark:marker:text-brand-blue marker:font-semibold">
+                            <ul className="space-y-2 text-sm text-light-text dark:text-dark-text list-disc list-inside marker:text-light-border dark:marker:text-dark-border pt-2">
                               {section.bullets.map((bullet) => (
                                 <li key={bullet}>{bullet}</li>
                               ))}

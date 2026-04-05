@@ -36,19 +36,8 @@ export const openAppStore = () => {
 
   if (isIOSDevice()) {
     window.location.href = APP_STORE_IOS_URL;
-    window.setTimeout(() => {
-      window.location.href = APP_STORE_WEB_URL;
-    }, 900);
     return;
   }
 
-  if (isMobileDevice()) {
-    window.location.href = APP_STORE_WEB_URL;
-    return;
-  }
-
-  const popup = window.open(APP_STORE_WEB_URL, '_blank', 'noopener,noreferrer');
-  if (!popup) {
-    window.location.href = APP_STORE_WEB_URL;
-  }
+  window.open(APP_STORE_WEB_URL, '_blank', 'noopener,noreferrer');
 };

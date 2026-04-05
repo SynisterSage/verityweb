@@ -90,9 +90,6 @@ export const Footer: React.FC = () => {
               className="flex items-center gap-3 cursor-pointer"
             >
               <Logo className="w-8 h-8 rounded-xl shadow-md shadow-black/10" />
-              <span className="text-lg font-bold text-light-text dark:text-dark-text">
-                Verity Protect
-              </span>
             </div>
 
             {/* Navigation Links */}

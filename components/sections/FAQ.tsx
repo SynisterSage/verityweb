@@ -80,13 +80,13 @@ export const FAQ: React.FC = () => {
   }, []);
 
   return (
-    <section id="faq" className="py-24 bg-brand-blue/5 border-t border-light-border dark:border-dark-border">
+    <section id="faq" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center text-light-text dark:text-dark-text mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text mb-16">
           Common Questions
         </h2>
 
-        <div className="space-y-4">
+        <div className="max-w-3xl mx-auto space-y-3">
           {FAQ_ITEMS.map((item, index) => {
             const isOpen = openIndex === index;
             return (
@@ -95,7 +95,7 @@ export const FAQ: React.FC = () => {
               className="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-xl overflow-hidden transition-colors duration-200 hover:border-brand-blue/30"
             >
               <button
-                className="w-full flex items-center justify-between p-6 text-left focus:outline-none group"
+                className="w-full flex items-center justify-between p-4 text-left focus:outline-none group"
                 onClick={() => toggle(index)}
               >
                 <span className="font-medium text-light-text dark:text-dark-text pr-4 text-lg">{item.question}</span>
@@ -116,7 +116,7 @@ export const FAQ: React.FC = () => {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <div className="p-6 pt-0 text-light-muted dark:text-dark-muted leading-relaxed text-base">
+                  <div className="p-4 pt-0 text-light-muted dark:text-dark-muted leading-relaxed text-base">
                     {item.answer}
                   </div>
                 </div>

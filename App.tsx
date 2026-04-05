@@ -4,9 +4,8 @@ import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
 import { HowItWorks } from './components/sections/HowItWorks';
 import { Benefits } from './components/sections/Benefits';
-import { Agencies } from './components/sections/Agencies';
+import { FacilitiesPartnership } from './components/sections/FacilitiesPartnership';
 import { FAQ } from './components/sections/FAQ';
-import { ExplainerVideo } from './components/sections/ExplainerVideo';
 import { Footer } from './components/layout/Footer';
 import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
 import { TermsOfService } from './components/legal/TermsOfService';
@@ -36,11 +35,10 @@ function Home({ scrollTo }: { scrollTo?: string }) {
   return (
     <div className="animate-in fade-in duration-500">
       <Hero />
-      <ExplainerVideo />
       <HowItWorks />
       <Benefits />
       <FAQ />
-      <Agencies />
+      <FacilitiesPartnership />
     </div>
   );
 }
